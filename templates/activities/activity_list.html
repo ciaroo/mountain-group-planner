@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Attività</title>
+</head>
+<body>
+    <h1>Attività disponibili</h1>
+
+    {% if activities %}
+        <ul>
+            {% for activity in activities %}
+                <li>
+                    <h2><a href="{% url 'activities:activity_detail' activity.pk %}">
+                            {{ activity.title }}
+                    </a></h2>
+                    <p><strong>Categoria:</strong> {{ activity.category }}</p>
+                    <p><strong>Data:</strong> {{ activity.date }}</p>
+                    <p><strong>Orario:</strong> {{ activity.start_time }}</p>
+                    <p><strong>Ritrovo:</strong> {{ activity.meeting_place }}</p>
+                    <p><strong>Posti disponibili:</strong> {{ activity.available_spots }} / {{ activity.max_participants }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Non ci sono attività disponibili.</p>
+    {% endif %}
+</body>
+</html>

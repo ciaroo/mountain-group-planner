@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ activity.title }}</title>
+</head>
+<body>
+    <p><a href="{% url 'activities:activity_list' %}">← Torna alle attività</a></p>
+
+    <h1>{{ activity.title }}</h1>
+
+    <p><strong>Categoria:</strong> {{ activity.category }}</p>
+    <p><strong>Descrizione:</strong> {{ activity.description }}</p>
+    <p><strong>Data:</strong> {{ activity.date }}</p>
+    <p><strong>Orario:</strong> {{ activity.start_time }}{% if activity.end_time %} - {{ activity.end_time }}{% endif %}</p>
+    <p><strong>Ritrovo:</strong> {{ activity.meeting_place }}</p>
+    <p><strong>Posti disponibili:</strong> {{ activity.available_spots }} / {{ activity.max_participants }}</p>
+    <p><strong>Cosa portare:</strong> {{ activity.what_to_bring|default:"Non specificato" }}</p>
+</body>
+</html>
