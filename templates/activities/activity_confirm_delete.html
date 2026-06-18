@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Elimina attività{% endblock %}
+
+{% block content %}
+    <h2>Elimina attività</h2>
+
+    <p>Sei sicuro di voler eliminare questa attività?</p>
+
+    <p>
+        <strong>{{ activity.title }}</strong>
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Sì, elimina</button>
+    </form>
+
+    <p>
+        <a href="{% url 'activities:activity_detail' activity.pk %}">Annulla</a>
+    </p>
+{% endblock %}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Mountain Group Planner{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h1>Mountain Group Planner</h1>
+
+        <nav>
+            <a href="{% url 'activities:activity_list' %}">Attività</a> |
+            <a href="{% url 'activities:my_bookings' %}">Le mie prenotazioni</a>
+            {% if user.is_staff %}
+                |<a href="{% url 'activities:create_activity' %}">Crea attività</a>
+            {% endif %}
+
+            {% if user.is_authenticated %}
+                | Ciao, {{ user.username }}
+            {% else %}
+                | <a href="{% url 'login' %}">Accedi</a>
+            {% endif %}
+        </nav>
+
+        <hr>
+    </header>
+
+    <main>
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

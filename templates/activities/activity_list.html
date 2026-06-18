@@ -1,19 +1,20 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <title>Attività</title>
-</head>
-<body>
-    <h1>Attività disponibili</h1>
+{% extends "base.html" %}
+
+{% block title %}Attività disponibili{% endblock %}
+
+{% block content %}
+    <h2>Attività disponibili</h2>
 
     {% if activities %}
         <ul>
             {% for activity in activities %}
                 <li>
-                    <h2><a href="{% url 'activities:activity_detail' activity.pk %}">
+                    <h3>
+                        <a href="{% url 'activities:activity_detail' activity.pk %}">
                             {{ activity.title }}
-                    </a></h2>
+                        </a>
+                    </h3>
+
                     <p><strong>Categoria:</strong> {{ activity.category }}</p>
                     <p><strong>Data:</strong> {{ activity.date }}</p>
                     <p><strong>Orario:</strong> {{ activity.start_time }}</p>
@@ -25,5 +26,4 @@
     {% else %}
         <p>Non ci sono attività disponibili.</p>
     {% endif %}
-</body>
-</html>
+{% endblock %}

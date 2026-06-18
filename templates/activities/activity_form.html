@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Crea attività{% endblock %}
+
+{% block content %}
+    <h2>Crea nuova attività</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">Salva attività</button>
+    </form>
+{% endblock %}

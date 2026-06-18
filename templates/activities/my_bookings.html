@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Le mie prenotazioni{% endblock %}
+
+{% block content %}
+    <h2>Le mie prenotazioni</h2>
+
+    {% if bookings %}
+        <ul>
+            {% for booking in bookings %}
+                <li>
+                    <h3>
+                        <a href="{% url 'activities:activity_detail' booking.activity.pk %}">
+                            {{ booking.activity.title }}
+                        </a>
+                    </h3>
+
+                    <p><strong>Data:</strong> {{ booking.activity.date }}</p>
+                    <p><strong>Orario:</strong> {{ booking.activity.start_time }}</p>
+                    <p><strong>Ritrovo:</strong> {{ booking.activity.meeting_place }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Non hai ancora prenotazioni.</p>
+    {% endif %}
+{% endblock %}
