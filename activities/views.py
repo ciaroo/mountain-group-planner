@@ -158,3 +158,12 @@ def delete_activity(request, pk):
     }
 
     return render(request, "activities/activity_confirm_delete.html", context)
+
+def activity_calendar(request):
+    activities = Activity.objects.all().order_by("date", "start_time")
+
+    context = {
+        "activities": activities
+    }
+
+    return render(request, "activities/activity_calendar.html", context)

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <h2>Dashboard personale</h2>
+
+    <p>Ciao, {{ user.username }}.</p>
+
+    <h3>Riepilogo</h3>
+
+    <p><strong>Prenotazioni totali:</strong> {{ total_bookings }}</p>
+
+    {% if user.is_staff %}
+        <p><strong>Attività presenti nel sistema:</strong> {{ total_activities }}</p>
+        <p><strong>Prenotazioni totali nel sistema:</strong> {{ total_all_bookings }}</p>
+
+        <p>
+            <a href="{% url 'activities:create_activity' %}">Crea una nuova attività</a>
+        </p>
+    {% endif %}
+
+    <h3>Le tue prossime attività</h3>
+
+    {% if user_bookings %}
+        <ul>
+            {% for booking in user_bookings %}
+                <li>
+                    <a href="{% url 'activities:activity_detail' booking.activity.pk %}">
+                        {{ booking.activity.title }}
+                    </a>
+                    - {{ booking.activity.date }} alle {{ booking.activity.start_time }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Non hai ancora prenotazioni.</p>
+    {% endif %}
+{% endblock %}

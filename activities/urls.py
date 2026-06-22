@@ -6,6 +6,7 @@ app_name = "activities"
 
 urlpatterns = [
     path("", views.activity_list, name="activity_list"),
+    path("calendar/", views.activity_calendar, name="activity_calendar"),
     path("create/", views.create_activity, name="create_activity"),
     path("my-bookings/", views.my_bookings, name="my_bookings"),
     path("<int:pk>/", views.activity_detail, name="activity_detail"),

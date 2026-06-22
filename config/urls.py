@@ -22,6 +22,7 @@ from django.shortcuts import redirect
 urlpatterns = [
     path("", lambda request: redirect("activities:activity_list")),
     path("admin/", admin.site.urls),
+    path("accounts/", include("accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
     path("activities/", include("activities.urls")),
 ]

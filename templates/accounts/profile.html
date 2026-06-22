@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Profilo utente{% endblock %}
+
+{% block content %}
+    <h2>Profilo utente</h2>
+
+    <p><strong>Username:</strong> {{ user.username }}</p>
+
+    <p>
+        <strong>Email:</strong>
+        {% if user.email %}
+            {{ user.email }}
+        {% else %}
+            Non inserita
+        {% endif %}
+    </p>
+
+    <p>
+        <strong>Ruolo:</strong>
+        {% if user.is_staff %}
+            Organizzatore
+        {% else %}
+            Partecipante
+        {% endif %}
+    </p>
+
+    <p><strong>Numero prenotazioni:</strong> {{ total_bookings }}</p>
+{% endblock %}
