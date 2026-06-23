@@ -4,40 +4,74 @@
 
 {% block content %}
     <p>
-        <a href="{% url 'activities:activity_list' %}">← Torna alle attività</a>
+        <a href="{% url 'activities:activity_list' %}" class="btn btn-outline-secondary btn-sm">
+            ← Torna alle attività
+        </a>
     </p>
 
-    <h2>{{ activity.title }}</h2>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <h2 class="card-title mb-1">{{ activity.title }}</h2>
+                    <p class="text-muted mb-0">{{ activity.category }}</p>
+                </div>
 
-    {% if user.is_staff %}
-        <p>
-            <a href="{% url 'activities:update_activity' activity.pk %}">Modifica attività</a>
-            |
-            <a href="{% url 'activities:delete_activity' activity.pk %}">Elimina attività</a>
-        </p>
-    {% endif %}
+                {% if user.is_staff %}
+                    <div>
+                        <a href="{% url 'activities:update_activity' activity.pk %}" class="btn btn-outline-primary btn-sm">
+                            Modifica
+                        </a>
 
-    <p><strong>Categoria:</strong> {{ activity.category }}</p>
-    <p><strong>Descrizione:</strong> {{ activity.description }}</p>
-    <p><strong>Data:</strong> {{ activity.date }}</p>
-    <p><strong>Orario:</strong> {{ activity.start_time }}{% if activity.end_time %} - {{ activity.end_time }}{% endif %}</p>
-    <p><strong>Ritrovo:</strong> {{ activity.meeting_place }}</p>
-    <p><strong>Posti disponibili:</strong> {{ activity.available_spots }} / {{ activity.max_participants }}</p>
-    <p><strong>Cosa portare:</strong> {{ activity.what_to_bring|default:"Non specificato" }}</p>
+                        <a href="{% url 'activities:delete_activity' activity.pk %}" class="btn btn-outline-danger btn-sm">
+                            Elimina
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
 
-    {% if user_booking %}
-        <p>Sei già prenotato a questa attività.</p>
+            <p>{{ activity.description }}</p>
 
-        <form method="post" action="{% url 'activities:cancel_booking' activity.pk %}">
-            {% csrf_token %}
-            <button type="submit">Annulla prenotazione</button>
-        </form>
-    {% elif activity.is_full %}
-        <p>Questa attività è al completo.</p>
-    {% else %}
-        <form method="post" action="{% url 'activities:book_activity' activity.pk %}">
-            {% csrf_token %}
-            <button type="submit">Prenotami</button>
-        </form>
-    {% endif %}
+            <hr>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Data:</strong> {{ activity.date }}</p>
+                    <p><strong>Orario:</strong> {{ activity.start_time }}{% if activity.end_time %} - {{ activity.end_time }}{% endif %}</p>
+                    <p><strong>Ritrovo:</strong> {{ activity.meeting_place }}</p>
+                </div>
+
+                <div class="col-md-6">
+                    <p><strong>Posti disponibili:</strong> {{ activity.available_spots }} / {{ activity.max_participants }}</p>
+                    <p><strong>Cosa portare:</strong> {{ activity.what_to_bring|default:"Non specificato" }}</p>
+                </div>
+            </div>
+
+            <hr>
+
+            {% if user_booking %}
+                <div class="alert alert-success">
+                    Sei già prenotato a questa attività.
+                </div>
+
+                <form method="post" action="{% url 'activities:cancel_booking' activity.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger">
+                        Annulla prenotazione
+                    </button>
+                </form>
+            {% elif activity.is_full %}
+                <div class="alert alert-warning">
+                    Questa attività è al completo.
+                </div>
+            {% else %}
+                <form method="post" action="{% url 'activities:book_activity' activity.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">
+                        Prenotami
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

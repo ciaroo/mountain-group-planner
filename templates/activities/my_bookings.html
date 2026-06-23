@@ -3,25 +3,48 @@
 {% block title %}Le mie prenotazioni{% endblock %}
 
 {% block content %}
-    <h2>Le mie prenotazioni</h2>
+    <div class="mb-4">
+        <h2 class="mb-1">Le mie prenotazioni</h2>
+        <p class="text-muted mb-0">
+            Qui trovi tutte le attività a cui ti sei iscritto.
+        </p>
+    </div>
 
     {% if bookings %}
-        <ul>
+        <div class="row">
             {% for booking in bookings %}
-                <li>
-                    <h3>
-                        <a href="{% url 'activities:activity_detail' booking.activity.pk %}">
-                            {{ booking.activity.title }}
-                        </a>
-                    </h3>
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h3 class="h5 card-title">
+                                <a href="{% url 'activities:activity_detail' booking.activity.pk %}" class="text-decoration-none">
+                                    {{ booking.activity.title }}
+                                </a>
+                            </h3>
 
-                    <p><strong>Data:</strong> {{ booking.activity.date }}</p>
-                    <p><strong>Orario:</strong> {{ booking.activity.start_time }}</p>
-                    <p><strong>Ritrovo:</strong> {{ booking.activity.meeting_place }}</p>
-                </li>
+                            <p class="mb-1">
+                                <strong>Data:</strong> {{ booking.activity.date }}
+                            </p>
+
+                            <p class="mb-1">
+                                <strong>Orario:</strong> {{ booking.activity.start_time }}
+                            </p>
+
+                            <p class="mb-3">
+                                <strong>Ritrovo:</strong> {{ booking.activity.meeting_place }}
+                            </p>
+
+                            <a href="{% url 'activities:activity_detail' booking.activity.pk %}" class="btn btn-outline-success btn-sm">
+                                Vai al dettaglio
+                            </a>
+                        </div>
+                    </div>
+                </div>
             {% endfor %}
-        </ul>
+        </div>
     {% else %}
-        <p>Non hai ancora prenotazioni.</p>
+        <div class="alert alert-warning">
+            Non hai ancora prenotazioni.
+        </div>
     {% endif %}
 {% endblock %}

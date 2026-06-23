@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from datetime import timedelta
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .models import Activity, Booking
@@ -162,8 +163,25 @@ def delete_activity(request, pk):
 def activity_calendar(request):
     activities = Activity.objects.all().order_by("date", "start_time")
 
+    if activities.exists():
+        start_date = activities.first().date
+    else:
+        start_date = None
+
+    calendar_days = []
+
+    if start_date:
+        for i in range(8):
+            current_date = start_date + timedelta(days=i)
+            day_activities = activities.filter(date=current_date)
+
+            calendar_days.append({
+                "date": current_date,
+                "activities": day_activities
+            })
+
     context = {
-        "activities": activities
+        "calendar_days": calendar_days
     }
 
     return render(request, "activities/activity_calendar.html", context)

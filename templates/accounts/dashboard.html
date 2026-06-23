@@ -3,37 +3,80 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-    <h2>Dashboard personale</h2>
+    <div class="mb-4">
+        <h2 class="mb-1">Dashboard personale</h2>
+        <p class="text-muted mb-0">
+            Riepilogo rapido delle tue attività e prenotazioni.
+        </p>
+    </div>
 
-    <p>Ciao, {{ user.username }}.</p>
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h3 class="h6 text-muted">Utente</h3>
+                    <p class="fs-5 mb-0">{{ user.username }}</p>
+                </div>
+            </div>
+        </div>
 
-    <h3>Riepilogo</h3>
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h3 class="h6 text-muted">Prenotazioni</h3>
+                    <p class="fs-3 fw-bold mb-0">{{ total_bookings }}</p>
+                </div>
+            </div>
+        </div>
 
-    <p><strong>Prenotazioni totali:</strong> {{ total_bookings }}</p>
+        {% if user.is_staff %}
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h3 class="h6 text-muted">Attività totali</h3>
+                        <p class="fs-3 fw-bold mb-0">{{ total_activities }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
 
     {% if user.is_staff %}
-        <p><strong>Attività presenti nel sistema:</strong> {{ total_activities }}</p>
-        <p><strong>Prenotazioni totali nel sistema:</strong> {{ total_all_bookings }}</p>
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h3 class="h5">Strumenti organizzatore</h3>
+                <p class="text-muted">
+                    Da qui puoi gestire le attività della vacanza.
+                </p>
 
-        <p>
-            <a href="{% url 'activities:create_activity' %}">Crea una nuova attività</a>
-        </p>
+                <a href="{% url 'activities:create_activity' %}" class="btn btn-success">
+                    Crea una nuova attività
+                </a>
+            </div>
+        </div>
     {% endif %}
 
-    <h3>Le tue prossime attività</h3>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h3 class="h5 mb-3">Le tue prossime attività</h3>
 
-    {% if user_bookings %}
-        <ul>
-            {% for booking in user_bookings %}
-                <li>
-                    <a href="{% url 'activities:activity_detail' booking.activity.pk %}">
-                        {{ booking.activity.title }}
-                    </a>
-                    - {{ booking.activity.date }} alle {{ booking.activity.start_time }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Non hai ancora prenotazioni.</p>
-    {% endif %}
+            {% if user_bookings %}
+                <div class="list-group">
+                    {% for booking in user_bookings %}
+                        <a href="{% url 'activities:activity_detail' booking.activity.pk %}" class="list-group-item list-group-item-action">
+                            <strong>{{ booking.activity.title }}</strong>
+                            <br>
+                            <span class="text-muted">
+                                {{ booking.activity.date }} alle {{ booking.activity.start_time }}
+                            </span>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-warning mb-0">
+                    Non hai ancora prenotazioni.
+                </div>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

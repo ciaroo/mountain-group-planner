@@ -3,27 +3,42 @@
 {% block title %}Profilo utente{% endblock %}
 
 {% block content %}
-    <h2>Profilo utente</h2>
+    <div class="mb-4">
+        <h2 class="mb-1">Profilo utente</h2>
+        <p class="text-muted mb-0">
+            Informazioni principali dell'account.
+        </p>
+    </div>
 
-    <p><strong>Username:</strong> {{ user.username }}</p>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <p>
+                <strong>Username:</strong>
+                {{ user.username }}
+            </p>
 
-    <p>
-        <strong>Email:</strong>
-        {% if user.email %}
-            {{ user.email }}
-        {% else %}
-            Non inserita
-        {% endif %}
-    </p>
+            <p>
+                <strong>Email:</strong>
+                {% if user.email %}
+                    {{ user.email }}
+                {% else %}
+                    <span class="text-muted">Non inserita</span>
+                {% endif %}
+            </p>
 
-    <p>
-        <strong>Ruolo:</strong>
-        {% if user.is_staff %}
-            Organizzatore
-        {% else %}
-            Partecipante
-        {% endif %}
-    </p>
+            <p>
+                <strong>Ruolo:</strong>
+                {% if user.is_staff %}
+                    <span class="badge text-bg-success">Organizzatore</span>
+                {% else %}
+                    <span class="badge text-bg-secondary">Partecipante</span>
+                {% endif %}
+            </p>
 
-    <p><strong>Numero prenotazioni:</strong> {{ total_bookings }}</p>
+            <p class="mb-0">
+                <strong>Numero prenotazioni:</strong>
+                {{ total_bookings }}
+            </p>
+        </div>
+    </div>
 {% endblock %}

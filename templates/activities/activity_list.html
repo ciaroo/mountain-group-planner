@@ -3,27 +3,63 @@
 {% block title %}Attività disponibili{% endblock %}
 
 {% block content %}
-    <h2>Attività disponibili</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">Attività disponibili</h2>
+            <p class="text-muted mb-0">Scegli le attività a cui vuoi partecipare durante la vacanza.</p>
+        </div>
+
+        {% if user.is_staff %}
+            <a href="{% url 'activities:create_activity' %}" class="btn btn-success">
+                Crea attività
+            </a>
+        {% endif %}
+    </div>
 
     {% if activities %}
-        <ul>
+        <div class="row">
             {% for activity in activities %}
-                <li>
-                    <h3>
-                        <a href="{% url 'activities:activity_detail' activity.pk %}">
-                            {{ activity.title }}
-                        </a>
-                    </h3>
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h3 class="card-title h5">
+                                <a href="{% url 'activities:activity_detail' activity.pk %}" class="text-decoration-none">
+                                    {{ activity.title }}
+                                </a>
+                            </h3>
 
-                    <p><strong>Categoria:</strong> {{ activity.category }}</p>
-                    <p><strong>Data:</strong> {{ activity.date }}</p>
-                    <p><strong>Orario:</strong> {{ activity.start_time }}</p>
-                    <p><strong>Ritrovo:</strong> {{ activity.meeting_place }}</p>
-                    <p><strong>Posti disponibili:</strong> {{ activity.available_spots }} / {{ activity.max_participants }}</p>
-                </li>
+                            <p class="mb-1">
+                                <strong>Categoria:</strong> {{ activity.category }}
+                            </p>
+
+                            <p class="mb-1">
+                                <strong>Data:</strong> {{ activity.date }}
+                            </p>
+
+                            <p class="mb-1">
+                                <strong>Orario:</strong> {{ activity.start_time }}
+                            </p>
+
+                            <p class="mb-1">
+                                <strong>Ritrovo:</strong> {{ activity.meeting_place }}
+                            </p>
+
+                            <p class="mb-3">
+                                <strong>Posti disponibili:</strong>
+                                {{ activity.available_spots }} / {{ activity.max_participants }}
+                            </p>
+
+                            <a href="{% url 'activities:activity_detail' activity.pk %}" class="btn btn-outline-success btn-sm">
+                                Dettagli
+                            </a>
+                        </div>
+                    </div>
+                </div>
             {% endfor %}
-        </ul>
+        </div>
     {% else %}
-        <p>Non ci sono attività disponibili.</p>
+        <div class="alert alert-warning">
+            Non ci sono attività disponibili.
+        </div>
     {% endif %}
 {% endblock %}

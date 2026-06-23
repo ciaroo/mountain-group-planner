@@ -3,23 +3,52 @@
 {% block title %}Calendario{% endblock %}
 
 {% block content %}
-    <h2>Calendario attività</h2>
+    <div class="mb-4">
+        <h2 class="mb-1">Calendario attività</h2>
+        <p class="text-muted mb-0">
+            Programma della vacanza da sabato a sabato.
+        </p>
+    </div>
 
-    {% if activities %}
-        <ul>
-            {% for activity in activities %}
-                <li>
-                    <strong>{{ activity.date }}</strong> -
-                    {{ activity.start_time }}:
-                    <a href="{% url 'activities:activity_detail' activity.pk %}">
-                        {{ activity.title }}
-                    </a>
-                    <br>
-                    <span>{{ activity.meeting_place }}</span>
-                </li>
+    {% if calendar_days %}
+        <div class="calendar-grid">
+            {% for day in calendar_days %}
+                <div class="calendar-day card shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <strong>{{ day.date|date:"l" }}</strong>
+                        <br>
+                        <small>{{ day.date }}</small>
+                    </div>
+
+                    <div class="card-body">
+                        {% if day.activities %}
+                            {% for activity in day.activities %}
+                                <div class="calendar-activity mb-2 p-2 rounded">
+                                    <strong>
+                                        <a href="{% url 'activities:activity_detail' activity.pk %}" class="text-decoration-none">
+                                            {{ activity.title }}
+                                        </a>
+                                    </strong>
+
+                                    <br>
+
+                                    <small class="text-muted">
+                                        {{ activity.start_time }} · {{ activity.meeting_place }}
+                                    </small>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted mb-0">
+                                Nessuna attività.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
             {% endfor %}
-        </ul>
+        </div>
     {% else %}
-        <p>Non ci sono attività in calendario.</p>
+        <div class="alert alert-warning">
+            Non ci sono attività in calendario.
+        </div>
     {% endif %}
 {% endblock %}
