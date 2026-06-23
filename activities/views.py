@@ -28,9 +28,14 @@ def activity_detail(request, pk):
             activity=activity
         ).first()
 
+    activity_bookings = Booking.objects.filter(
+        activity=activity
+    ).select_related("user").order_by("created_at")
+
     context = {
         "activity": activity,
-        "user_booking": user_booking
+        "user_booking": user_booking,
+        "activity_bookings": activity_bookings
     }
 
     return render(request, "activities/activity_detail.html", context)
