@@ -258,3 +258,34 @@ def activity_calendar(request):
     }
 
     return render(request, "activities/activity_calendar.html", context)
+
+
+def today_program(request):
+    first_activity = Activity.objects.all().order_by("date", "start_time").first()
+
+    if first_activity:
+        selected_date = first_activity.date
+        activities = Activity.objects.filter(
+            date=selected_date
+        ).order_by("start_time")
+    else:
+        selected_date = None
+        activities = Activity.objects.none()
+
+    user_bookings_today = []
+
+    if request.user.is_authenticated and selected_date:
+        user_bookings_today = Booking.objects.filter(
+            user=request.user,
+            activity__date=selected_date
+        ).select_related("activity").order_by(
+            "activity__start_time"
+        )
+
+    context = {
+        "selected_date": selected_date,
+        "activities": activities,
+        "user_bookings_today": user_bookings_today,
+    }
+
+    return render(request, "activities/today.html", context)

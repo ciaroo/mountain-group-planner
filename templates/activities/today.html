@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Oggi{% endblock %}
+
+{% block content %}
+    <div class="mb-4">
+        <h2 class="mb-1">Programma del giorno</h2>
+
+        {% if selected_date %}
+            <p class="text-muted mb-0">
+                Attività previste per {{ selected_date }}.
+            </p>
+        {% else %}
+            <p class="text-muted mb-0">
+                Non ci sono ancora attività inserite.
+            </p>
+        {% endif %}
+    </div>
+
+    {% if selected_date %}
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h3 class="h6 text-muted">Data</h3>
+                        <p class="fs-5 fw-bold mb-0">{{ selected_date }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h3 class="h6 text-muted">Attività previste</h3>
+                        <p class="fs-3 fw-bold mb-0">{{ activities|length }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h3 class="h6 text-muted">Le tue prenotazioni oggi</h3>
+                        <p class="fs-3 fw-bold mb-0">{{ user_bookings_today|length }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if user.is_authenticated and user_bookings_today %}
+            <div class="card shadow-sm mb-4 border-success">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">Le tue attività di oggi</h3>
+
+                    <div class="list-group">
+                        {% for booking in user_bookings_today %}
+                            <a href="{% url 'activities:activity_detail' booking.activity.pk %}" class="list-group-item list-group-item-action">
+                                <strong>{{ booking.activity.title }}</strong>
+                                <br>
+                                <span class="text-muted">
+                                    {{ booking.activity.start_time }}
+                                    {% if booking.activity.end_time %}
+                                        - {{ booking.activity.end_time }}
+                                    {% else %}
+                                        - durata stimata 3 ore
+                                    {% endif %}
+                                    · {{ booking.activity.meeting_place }}
+                                </span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="h5 mb-3">Tutte le attività del giorno</h3>
+
+                {% if activities %}
+                    <div class="list-group">
+                        {% for activity in activities %}
+                            <a href="{% url 'activities:activity_detail' activity.pk %}" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong>{{ activity.title }}</strong>
+                                        <br>
+                                        <span class="text-muted">
+                                            {{ activity.start_time }}
+                                            {% if activity.end_time %}
+                                                - {{ activity.end_time }}
+                                            {% else %}
+                                                - durata stimata 3 ore
+                                            {% endif %}
+                                            · {{ activity.meeting_place }}
+                                        </span>
+                                    </div>
+
+                                    <div class="text-end">
+                                        {% if activity.is_full %}
+                                            <span class="badge text-bg-danger">Completa</span>
+                                        {% elif activity.is_almost_full %}
+                                            <span class="badge text-bg-warning">Quasi piena</span>
+                                        {% else %}
+                                            <span class="badge text-bg-success">Disponibile</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning mb-0">
+                        Non ci sono attività per questo giorno.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-warning">
+            Non ci sono ancora attività da mostrare.
+        </div>
+    {% endif %}
+{% endblock %}
