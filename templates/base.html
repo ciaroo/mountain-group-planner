@@ -12,34 +12,86 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-success">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{% url 'activities:activity_list' %}">
+            <a class="navbar-brand fw-bold" href="{% url 'accounts:home' %}">
                 Mountain Group Planner
             </a>
 
-            <div class="navbar-nav me-auto">
-                <a class="nav-link" href="{% url 'activities:today_program' %}">Oggi</a>
-                <a class="nav-link" href="{% url 'accounts:dashboard' %}">Dashboard</a>
-                <a class="nav-link" href="{% url 'accounts:profile' %}">Profilo</a>
-                <a class="nav-link" href="{% url 'activities:activity_list' %}">Attività</a>
-                <a class="nav-link" href="{% url 'activities:activity_calendar' %}">Calendario</a>
-                <a class="nav-link" href="{% url 'activities:my_bookings' %}">Le mie prenotazioni</a>
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar"
+                aria-expanded="false"
+                aria-label="Apri menu"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                {% if user.is_staff %}
-                    <a class="nav-link" href="{% url 'activities:create_activity' %}">Crea attività</a>
-                {% endif %}
-            </div>
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <div class="navbar-nav me-auto">
+                    <a class="nav-link" href="{% url 'accounts:home' %}">Home</a>
+                    <a class="nav-link" href="{% url 'activities:notice_list' %}">Avvisi</a>
+                    <a class="nav-link" href="{% url 'activities:activity_list' %}">Attività</a>
+                    <a class="nav-link" href="{% url 'activities:activity_calendar' %}">Calendario</a>
 
-            <div class="d-flex align-items-center gap-2">
-                {% if user.is_authenticated %}
-                    <span class="text-white">Ciao, {{ user.username }}</span>
+                    {% if user.is_staff %}
+                        <div class="nav-item dropdown">
+                            <a
+                                class="nav-link dropdown-toggle"
+                                href="#"
+                                role="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >
+                                Organizzazione
+                            </a>
 
-                    <form method="post" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-light btn-sm">Esci</button>
-                    </form>
-                {% else %}
-                    <a class="btn btn-light btn-sm" href="{% url 'login' %}">Accedi</a>
-                {% endif %}
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'activities:create_activity' %}">
+                                        Crea attività
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'activities:create_notice' %}">
+                                        Crea avviso
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'accounts:cars_organization' %}">
+                                        Organizzazione auto
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="navbar-nav ms-auto align-items-lg-center">
+                    {% if user.is_authenticated %}
+                        <a class="nav-link" href="{% url 'activities:my_bookings' %}">
+                            Le mie prenotazioni
+                        </a>
+
+                        <a class="nav-link" href="{% url 'accounts:profile' %}">
+                            Profilo
+                        </a>
+
+                        <form method="post" action="{% url 'logout' %}" class="d-inline ms-lg-2">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-light btn-sm">
+                                Esci
+                            </button>
+                        </form>
+                    {% else %}
+                        <a class="btn btn-light btn-sm" href="{% url 'login' %}">
+                            Accedi
+                        </a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </nav>

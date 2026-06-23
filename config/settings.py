@@ -104,9 +104,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "it-it"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "Europe/Rome"
 
 USE_I18N = True
 
@@ -122,6 +122,9 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
+LOGIN_REDIRECT_URL = "accounts:home"
+LOGOUT_REDIRECT_URL = "accounts:home"
 LOGIN_URL = "login"
-LOGIN_REDIRECT_URL = "activities:activity_list"
-LOGOUT_REDIRECT_URL = "activities:activity_list"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"

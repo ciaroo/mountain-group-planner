@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if notice %}
+        Modifica avviso
+    {% else %}
+        Crea avviso
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="mb-4">
+        {% if notice %}
+            <h2 class="mb-1">Modifica avviso</h2>
+            <p class="text-muted mb-0">
+                Aggiorna una comunicazione già pubblicata.
+            </p>
+        {% else %}
+            <h2 class="mb-1">Crea avviso</h2>
+            <p class="text-muted mb-0">
+                Pubblica una comunicazione per tutti i partecipanti.
+            </p>
+        {% endif %}
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Titolo</label>
+                    {{ form.title }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Testo avviso</label>
+                    {{ form.content }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Priorità</label>
+                    {{ form.priority }}
+                </div>
+
+                <div class="form-check mb-3">
+                    {{ form.is_active }}
+                    <label class="form-check-label">
+                        Avviso attivo
+                    </label>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success">
+                        Salva avviso
+                    </button>
+
+                    <a href="{% url 'activities:notice_list' %}" class="btn btn-outline-secondary">
+                        Annulla
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

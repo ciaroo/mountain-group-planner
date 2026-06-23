@@ -67,7 +67,7 @@
                             <strong>{{ booking.activity.title }}</strong>
                             <br>
                             <span class="text-muted">
-                                {{ booking.activity.date }} alle {{ booking.activity.start_time }}
+                                {{ booking.activity.date|date:"l d F Y" }} alle {{ booking.activity.start_time|time:"H:i" }}
                             </span>
                         </a>
                     {% endfor %}

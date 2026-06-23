@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Elimina avviso{% endblock %}
+
+{% block content %}
+    <div class="mb-4">
+        <h2 class="mb-1">Elimina avviso</h2>
+        <p class="text-muted mb-0">
+            Conferma l'eliminazione dell'avviso selezionato.
+        </p>
+    </div>
+
+    <div class="card shadow-sm border-danger">
+        <div class="card-body">
+            <div class="alert alert-danger">
+                Attenzione: questa azione eliminerà definitivamente l'avviso.
+            </div>
+
+            <p class="mb-1">
+                Stai per eliminare:
+            </p>
+
+            <h3 class="h5 mb-3">
+                {{ notice.title }}
+            </h3>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-danger">
+                        Sì, elimina
+                    </button>
+
+                    <a href="{% url 'activities:notice_list' %}" class="btn btn-outline-secondary">
+                        Annulla
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

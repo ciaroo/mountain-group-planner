@@ -1,78 +1,213 @@
 {% extends "base.html" %}
 
-{% block title %}
-    {% if activity %}
-        Modifica attività
-    {% else %}
-        Crea attività
-    {% endif %}
-{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-    <div class="mb-4">
-        {% if activity %}
-            <h2 class="mb-1">Modifica attività</h2>
-            <p class="text-muted mb-0">
-                Aggiorna le informazioni dell'attività.
-            </p>
-        {% else %}
-            <h2 class="mb-1">Crea nuova attività</h2>
-            <p class="text-muted mb-0">
-                Inserisci una nuova attività nel programma della vacanza.
-            </p>
-        {% endif %}
-    </div>
+    <section class="page-header mb-4">
+        <div>
+            <p class="section-label mb-2">Gestione attività</p>
 
-    <div class="card shadow-sm">
+            <h1 class="mb-2">
+                {{ title }}
+            </h1>
+
+            <p class="text-muted mb-0">
+                Compila le informazioni dell’attività. Se è un evento per tutto il gruppo, disattiva la prenotazione.
+            </p>
+        </div>
+    </section>
+
+    <section class="card shadow-sm clean-card">
         <div class="card-body">
-            <form method="post">
+            <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
 
-                <div class="mb-3">
-                    <label class="form-label">Titolo</label>
-                    {{ form.title }}
-                </div>
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
 
-                <div class="mb-3">
-                    <label class="form-label">Categoria</label>
-                    {{ form.category }}
-                </div>
+                <div class="mb-4">
+                    <h2 class="h5 mb-3">
+                        Informazioni principali
+                    </h2>
 
-                <div class="mb-3">
-                    <label class="form-label">Descrizione</label>
-                    {{ form.description }}
-                </div>
+                    <div class="mb-3">
+                        <label for="{{ form.title.id_for_label }}" class="form-label">
+                            Titolo
+                        </label>
+                        {{ form.title }}
 
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Data</label>
-                        {{ form.date }}
+                        {% if form.title.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.title.errors }}
+                            </div>
+                        {% endif %}
                     </div>
 
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Ora inizio</label>
-                        {{ form.start_time }}
+                    <div class="mb-3">
+                        <label for="{{ form.category.id_for_label }}" class="form-label">
+                            Categoria
+                        </label>
+                        {{ form.category }}
+
+                        {% if form.category.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.category.errors }}
+                            </div>
+                        {% endif %}
                     </div>
 
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Ora fine</label>
-                        {{ form.end_time }}
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">
+                            Descrizione
+                        </label>
+                        {{ form.description }}
+
+                        {% if form.description.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.description.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.image.id_for_label }}" class="form-label">
+                            Immagine attività
+                        </label>
+                        {{ form.image }}
+
+                        <div class="form-text">
+                            Facoltativa. Verrà mostrata nella Home, nella lista attività e nel dettaglio.
+                        </div>
+
+                        {% if form.image.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.image.errors }}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Luogo di ritrovo</label>
-                    {{ form.meeting_place }}
+                <div class="mb-4">
+                    <h2 class="h5 mb-3">
+                        Data e luogo
+                    </h2>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.date.id_for_label }}" class="form-label">
+                                Data
+                            </label>
+                            {{ form.date }}
+
+                            {% if form.date.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.date.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.start_time.id_for_label }}" class="form-label">
+                                Orario inizio
+                            </label>
+                            {{ form.start_time }}
+
+                            {% if form.start_time.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.start_time.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.end_time.id_for_label }}" class="form-label">
+                                Orario fine
+                            </label>
+                            {{ form.end_time }}
+
+                            {% if form.end_time.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.end_time.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.meeting_place.id_for_label }}" class="form-label">
+                            Luogo di ritrovo
+                        </label>
+                        {{ form.meeting_place }}
+
+                        {% if form.meeting_place.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.meeting_place.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Numero massimo partecipanti</label>
-                    {{ form.max_participants }}
+                <div class="mb-4">
+                    <h2 class="h5 mb-3">
+                        Prenotazione
+                    </h2>
+
+                    <div class="form-check form-switch mb-3">
+                        {{ form.requires_booking }}
+
+                        <label for="{{ form.requires_booking.id_for_label }}" class="form-check-label">
+                            Richiede prenotazione
+                        </label>
+
+                        <div class="form-text">
+                            Lascia attivo per le attività a posti limitati. Disattiva per eventi di gruppo visibili solo nel calendario e nella Home.
+                        </div>
+
+                        {% if form.requires_booking.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.requires_booking.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.max_participants.id_for_label }}" class="form-label">
+                            Numero massimo partecipanti
+                        </label>
+                        {{ form.max_participants }}
+
+                        <div class="form-text">
+                            Per gli eventi di gruppo puoi indicare il numero totale dei partecipanti, ad esempio 30.
+                        </div>
+
+                        {% if form.max_participants.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.max_participants.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Cosa portare</label>
-                    {{ form.what_to_bring }}
+                <div class="mb-4">
+                    <h2 class="h5 mb-3">
+                        Informazioni utili
+                    </h2>
+
+                    <div class="mb-3">
+                        <label for="{{ form.what_to_bring.id_for_label }}" class="form-label">
+                            Cosa portare
+                        </label>
+                        {{ form.what_to_bring }}
+
+                        {% if form.what_to_bring.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.what_to_bring.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
 
                 <div class="d-flex gap-2">
@@ -86,5 +221,5 @@
                 </div>
             </form>
         </div>
-    </div>
+    </section>
 {% endblock %}

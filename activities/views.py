@@ -4,12 +4,18 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import ActivityForm
-from .models import Activity, Booking, Category
+from .forms import ActivityForm, NoticeForm
+from .models import Activity, Booking, Category, Notice
 
 
 def activity_list(request):
-    activities = Activity.objects.all().order_by("date", "start_time")
+    activities = Activity.objects.filter(
+        requires_booking=True
+    ).order_by(
+        "date",
+        "start_time"
+    )
+
     categories = Category.objects.all().order_by("name")
 
     search_query = request.GET.get("q", "")
@@ -20,7 +26,7 @@ def activity_list(request):
             activities.filter(title__icontains=search_query)
             | activities.filter(description__icontains=search_query)
             | activities.filter(meeting_place__icontains=search_query)
-        )
+        ).distinct().order_by("date", "start_time")
 
     if selected_category:
         activities = activities.filter(category_id=selected_category)
@@ -48,7 +54,7 @@ def activity_detail(request, pk):
 
     activity_bookings = Booking.objects.filter(
         activity=activity
-    ).select_related("user").order_by("created_at")
+    ).select_related("user").order_by("user__username")
 
     context = {
         "activity": activity,
@@ -59,15 +65,19 @@ def activity_detail(request, pk):
     return render(request, "activities/activity_detail.html", context)
 
 
+@login_required
 def book_activity(request, pk):
     activity = get_object_or_404(Activity, pk=pk)
 
-    if not request.user.is_authenticated:
-        messages.error(request, "Devi effettuare il login per prenotarti.")
+    if not activity.requires_booking:
+        messages.error(
+            request,
+            "Questa è un'attività di gruppo: non è necessaria la prenotazione."
+        )
         return redirect("activities:activity_detail", pk=activity.pk)
 
     if activity.is_full:
-        messages.error(request, "Non ci sono più posti disponibili per questa attività.")
+        messages.error(request, "Questa attività è già al completo.")
         return redirect("activities:activity_detail", pk=activity.pk)
 
     activity_start = datetime.combine(activity.date, activity.start_time)
@@ -77,14 +87,12 @@ def book_activity(request, pk):
     else:
         activity_end = activity_start + timedelta(hours=3)
 
-    user_bookings = Booking.objects.filter(
+    user_bookings_same_day = Booking.objects.filter(
         user=request.user,
         activity__date=activity.date
     ).select_related("activity")
 
-    conflicting_booking = None
-
-    for booking in user_bookings:
+    for booking in user_bookings_same_day:
         booked_activity = booking.activity
 
         booked_start = datetime.combine(
@@ -100,19 +108,14 @@ def book_activity(request, pk):
         else:
             booked_end = booked_start + timedelta(hours=3)
 
-        has_conflict = activity_start < booked_end and activity_end > booked_start
+        activities_overlap = activity_start < booked_end and activity_end > booked_start
 
-        if has_conflict and booked_activity != activity:
-            conflicting_booking = booking
-            break
-
-    if conflicting_booking:
-        messages.error(
-            request,
-            f"Non puoi prenotarti: sei già impegnato con "
-            f"'{conflicting_booking.activity.title}' in quell'orario."
-        )
-        return redirect("activities:activity_detail", pk=activity.pk)
+        if activities_overlap:
+            messages.error(
+                request,
+                "Non puoi prenotarti: hai già un'altra attività nello stesso orario."
+            )
+            return redirect("activities:activity_detail", pk=activity.pk)
 
     booking, created = Booking.objects.get_or_create(
         user=request.user,
@@ -120,9 +123,9 @@ def book_activity(request, pk):
     )
 
     if created:
-        messages.success(request, "Prenotazione effettuata con successo.")
+        messages.success(request, "Prenotazione effettuata correttamente.")
     else:
-        messages.warning(request, "Sei già prenotato a questa attività.")
+        messages.info(request, "Sei già prenotato a questa attività.")
 
     return redirect("activities:activity_detail", pk=activity.pk)
 
@@ -140,7 +143,7 @@ def cancel_booking(request, pk):
         booking.delete()
         messages.success(request, "Prenotazione annullata correttamente.")
     else:
-        messages.warning(request, "Non avevi una prenotazione per questa attività.")
+        messages.info(request, "Non eri prenotato a questa attività.")
 
     return redirect("activities:activity_detail", pk=activity.pk)
 
@@ -168,7 +171,7 @@ def create_activity(request):
         return redirect("activities:activity_list")
 
     if request.method == "POST":
-        form = ActivityForm(request.POST)
+        form = ActivityForm(request.POST, request.FILES)
 
         if form.is_valid():
             activity = form.save(commit=False)
@@ -180,7 +183,8 @@ def create_activity(request):
         form = ActivityForm()
 
     context = {
-        "form": form
+        "form": form,
+        "title": "Crea attività",
     }
 
     return render(request, "activities/activity_form.html", context)
@@ -195,18 +199,19 @@ def update_activity(request, pk):
         return redirect("activities:activity_detail", pk=activity.pk)
 
     if request.method == "POST":
-        form = ActivityForm(request.POST, instance=activity)
+        form = ActivityForm(request.POST, request.FILES, instance=activity)
 
         if form.is_valid():
             form.save()
-            messages.success(request, "Attività modificata correttamente.")
+            messages.success(request, "Attività aggiornata correttamente.")
             return redirect("activities:activity_detail", pk=activity.pk)
     else:
         form = ActivityForm(instance=activity)
 
     context = {
         "form": form,
-        "activity": activity
+        "title": "Modifica attività",
+        "activity": activity,
     }
 
     return render(request, "activities/activity_form.html", context)
@@ -233,59 +238,132 @@ def delete_activity(request, pk):
 
 
 def activity_calendar(request):
-    activities = Activity.objects.all().order_by("date", "start_time")
+    activities = Activity.objects.all().order_by(
+        "date",
+        "start_time"
+    )
 
-    if activities.exists():
-        start_date = activities.first().date
-    else:
-        start_date = None
+    activities_by_date = {}
 
-    calendar_days = []
+    for activity in activities:
+        if activity.date not in activities_by_date:
+            activities_by_date[activity.date] = []
 
-    if start_date:
-        for i in range(8):
-            current_date = start_date + timedelta(days=i)
-
-            day_activities = activities.filter(date=current_date)
-
-            calendar_days.append({
-                "date": current_date,
-                "activities": day_activities
-            })
+        activities_by_date[activity.date].append(activity)
 
     context = {
-        "calendar_days": calendar_days
+        "activities_by_date": activities_by_date
     }
 
     return render(request, "activities/activity_calendar.html", context)
 
 
 def today_program(request):
-    first_activity = Activity.objects.all().order_by("date", "start_time").first()
+    first_activity = Activity.objects.all().order_by(
+        "date",
+        "start_time"
+    ).first()
 
     if first_activity:
         selected_date = first_activity.date
         activities = Activity.objects.filter(
             date=selected_date
-        ).order_by("start_time")
+        ).order_by(
+            "start_time"
+        )
     else:
         selected_date = None
         activities = Activity.objects.none()
 
-    user_bookings_today = []
-
-    if request.user.is_authenticated and selected_date:
-        user_bookings_today = Booking.objects.filter(
-            user=request.user,
-            activity__date=selected_date
-        ).select_related("activity").order_by(
-            "activity__start_time"
-        )
-
     context = {
         "selected_date": selected_date,
         "activities": activities,
-        "user_bookings_today": user_bookings_today,
     }
 
     return render(request, "activities/today.html", context)
+
+
+def notice_list(request):
+    if request.user.is_authenticated and request.user.is_staff:
+        notices = Notice.objects.all()
+    else:
+        notices = Notice.objects.filter(is_active=True)
+
+    context = {
+        "notices": notices
+    }
+
+    return render(request, "activities/notice_list.html", context)
+
+
+@login_required
+def create_notice(request):
+    if not request.user.is_staff:
+        messages.error(request, "Non hai il permesso per creare avvisi.")
+        return redirect("activities:notice_list")
+
+    if request.method == "POST":
+        form = NoticeForm(request.POST)
+
+        if form.is_valid():
+            notice = form.save(commit=False)
+            notice.created_by = request.user
+            notice.save()
+            messages.success(request, "Avviso creato correttamente.")
+            return redirect("activities:notice_list")
+    else:
+        form = NoticeForm()
+
+    context = {
+        "form": form,
+        "title": "Crea avviso",
+    }
+
+    return render(request, "activities/notice_form.html", context)
+
+
+@login_required
+def update_notice(request, pk):
+    notice = get_object_or_404(Notice, pk=pk)
+
+    if not request.user.is_staff:
+        messages.error(request, "Non hai il permesso per modificare avvisi.")
+        return redirect("activities:notice_list")
+
+    if request.method == "POST":
+        form = NoticeForm(request.POST, instance=notice)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Avviso aggiornato correttamente.")
+            return redirect("activities:notice_list")
+    else:
+        form = NoticeForm(instance=notice)
+
+    context = {
+        "form": form,
+        "title": "Modifica avviso",
+        "notice": notice,
+    }
+
+    return render(request, "activities/notice_form.html", context)
+
+
+@login_required
+def delete_notice(request, pk):
+    notice = get_object_or_404(Notice, pk=pk)
+
+    if not request.user.is_staff:
+        messages.error(request, "Non hai il permesso per eliminare avvisi.")
+        return redirect("activities:notice_list")
+
+    if request.method == "POST":
+        notice.delete()
+        messages.success(request, "Avviso eliminato correttamente.")
+        return redirect("activities:notice_list")
+
+    context = {
+        "notice": notice
+    }
+
+    return render(request, "activities/notice_confirm_delete.html", context)

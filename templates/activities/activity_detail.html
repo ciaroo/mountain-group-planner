@@ -3,129 +3,212 @@
 {% block title %}{{ activity.title }}{% endblock %}
 
 {% block content %}
-    <p>
-        <a href="{% url 'activities:activity_list' %}" class="btn btn-outline-secondary btn-sm">
-            ← Torna alle attività
-        </a>
-    </p>
-
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-                <div>
-                    <h2 class="card-title mb-1">{{ activity.title }}</h2>
-                    <p class="text-muted mb-0">{{ activity.category }}</p>
-                </div>
-
-                {% if user.is_staff %}
-                    <div>
-                        <a href="{% url 'activities:update_activity' activity.pk %}" class="btn btn-outline-primary btn-sm">
-                            Modifica
-                        </a>
-
-                        <a href="{% url 'activities:delete_activity' activity.pk %}" class="btn btn-outline-danger btn-sm">
-                            Elimina
-                        </a>
-                    </div>
-                {% endif %}
+    <section class="activity-detail-hero mb-4">
+        {% if activity.image %}
+            <img src="{{ activity.image.url }}" alt="{{ activity.title }}">
+        {% else %}
+            <div class="activity-detail-placeholder">
+                <span>Mountain Planner</span>
             </div>
+        {% endif %}
 
-            <p>{{ activity.description }}</p>
-
-            <hr>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <p><strong>Data:</strong> {{ activity.date }}</p>
-                    <p>
-                        <strong>Orario:</strong>
-                        {{ activity.start_time }}
-                        {% if activity.end_time %}
-                            - {{ activity.end_time }}
-                        {% else %}
-                            - durata stimata 3 ore
-                        {% endif %}
-                    </p>
-                    <p><strong>Ritrovo:</strong> {{ activity.meeting_place }}</p>
-                </div>
-
-                <div class="col-md-6">
-                    <p>
-                        <strong>Posti disponibili:</strong>
-                        {{ activity.available_spots }} / {{ activity.max_participants }}
-                    </p>
-
-                    <p>
-                        <strong>Stato:</strong>
-
-                        {% if activity.is_full %}
-                            <span class="badge text-bg-danger">Completa</span>
-                        {% elif activity.is_almost_full %}
-                            <span class="badge text-bg-warning">Quasi piena</span>
-                        {% else %}
-                            <span class="badge text-bg-success">Disponibile</span>
-                        {% endif %}
-                    </p>
-
-                    <p><strong>Cosa portare:</strong> {{ activity.what_to_bring|default:"Non specificato" }}</p>
-                </div>
-            </div>
-
-            <hr>
-
-            {% if user_booking %}
-                <div class="alert alert-success">
-                    Sei già prenotato a questa attività.
-                </div>
-
-                <form method="post" action="{% url 'activities:cancel_booking' activity.pk %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-outline-danger">
-                        Annulla prenotazione
-                    </button>
-                </form>
-            {% elif activity.is_full %}
-                <div class="alert alert-warning">
-                    Questa attività è al completo.
-                </div>
+        <div class="activity-detail-hero-content">
+            {% if activity.requires_booking %}
+                <p class="section-label mb-2">Attività prenotabile</p>
             {% else %}
-                <form method="post" action="{% url 'activities:book_activity' activity.pk %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-success">
-                        Prenotami
-                    </button>
-                </form>
+                <p class="section-label mb-2">Evento di gruppo</p>
             {% endif %}
 
-            {% if user.is_staff %}
-                <hr>
+            <h1 class="mb-2">
+                {{ activity.title }}
+            </h1>
 
-                <h3 class="h5 mb-3">Partecipanti iscritti</h3>
-
-                {% if activity_bookings %}
-                    <div class="list-group">
-                        {% for booking in activity_bookings %}
-                            <div class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong>{{ booking.user.username }}</strong>
-
-                                    {% if booking.user.email %}
-                                        <br>
-                                        <small class="text-muted">{{ booking.user.email }}</small>
-                                    {% endif %}
-                                </div>
-
-                                <span class="badge text-bg-success">
-                                    Iscritto
-                                </span>
-                            </div>
-                        {% endfor %}
-                    </div>
+            <p class="mb-0">
+                {{ activity.date|date:"l d F Y" }} · {{ activity.start_time|time:"H:i" }}
+                {% if activity.end_time %}
+                    - {{ activity.end_time|time:"H:i" }}
                 {% else %}
-                    <div class="alert alert-warning mb-0">
-                        Nessun partecipante iscritto.
-                    </div>
+                    - durata stimata 3 ore
                 {% endif %}
+            </p>
+        </div>
+    </section>
+
+    {% if user.is_authenticated and user.is_staff %}
+        <div class="d-flex gap-2 mb-4">
+            <a href="{% url 'activities:update_activity' activity.pk %}" class="btn btn-outline-success">
+                Modifica
+            </a>
+
+            <a href="{% url 'activities:delete_activity' activity.pk %}" class="btn btn-outline-danger">
+                Elimina
+            </a>
+        </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <section class="card shadow-sm clean-card mb-4">
+                <div class="card-body">
+                    {% if not activity.requires_booking %}
+                        <span class="badge text-bg-info mb-3">
+                            Attività per tutto il gruppo
+                        </span>
+                    {% elif activity.is_full %}
+                        <span class="badge text-bg-danger mb-3">
+                            Completa
+                        </span>
+                    {% elif activity.is_almost_full %}
+                        <span class="badge text-bg-warning mb-3">
+                            Quasi piena
+                        </span>
+                    {% else %}
+                        <span class="badge text-bg-success mb-3">
+                            Disponibile
+                        </span>
+                    {% endif %}
+
+                    <h2 class="h4 mb-3">
+                        Descrizione
+                    </h2>
+
+                    <p class="mb-0">
+                        {{ activity.description }}
+                    </p>
+                </div>
+            </section>
+
+            <section class="card shadow-sm clean-card">
+                <div class="card-body">
+                    <h2 class="h4 mb-3">
+                        Informazioni utili
+                    </h2>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <p class="text-muted mb-1">Ritrovo</p>
+                            <strong>{{ activity.meeting_place }}</strong>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <p class="text-muted mb-1">Orario</p>
+                            <strong>
+                                {{ activity.start_time|time:"H:i" }}
+                                {% if activity.end_time %}
+                                    - {{ activity.end_time|time:"H:i" }}
+                                {% else %}
+                                    - durata stimata 3 ore
+                                {% endif %}
+                            </strong>
+                        </div>
+
+                        {% if activity.what_to_bring %}
+                            <div class="col-12">
+                                <p class="text-muted mb-1">Cosa portare</p>
+                                <strong>{{ activity.what_to_bring }}</strong>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-4 mb-4">
+            <section class="card shadow-sm clean-card">
+                <div class="card-body">
+                    {% if activity.requires_booking %}
+                        <h2 class="h4 mb-3">
+                            Prenotazione
+                        </h2>
+
+                        <div class="spots-box mb-4">
+                            <span class="spots-number">
+                                {{ activity.available_spots }}
+                            </span>
+
+                            <span class="spots-label">
+                                posti disponibili
+                            </span>
+
+                            <span class="spots-total">
+                                su {{ activity.max_participants }}
+                            </span>
+                        </div>
+
+                        {% if user.is_authenticated %}
+                            {% if user_booking %}
+                                <p class="text-muted">
+                                    Sei già prenotato a questa attività.
+                                </p>
+
+                                <form method="post" action="{% url 'activities:cancel_booking' activity.pk %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-danger w-100">
+                                        Annulla prenotazione
+                                    </button>
+                                </form>
+                            {% else %}
+                                {% if activity.is_full %}
+                                    <button class="btn btn-secondary w-100" disabled>
+                                        Attività completa
+                                    </button>
+                                {% else %}
+                                    <form method="post" action="{% url 'activities:book_activity' activity.pk %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-success w-100">
+                                            Prenotami
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            <p class="text-muted">
+                                Accedi per prenotarti a questa attività.
+                            </p>
+
+                            <a href="{% url 'login' %}" class="btn btn-success w-100">
+                                Accedi
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <h2 class="h4 mb-3">
+                            Evento di gruppo
+                        </h2>
+
+                        <p class="text-muted">
+                            Questa attività coinvolge tutto il gruppo.
+                            Non è richiesta alcuna prenotazione.
+                        </p>
+
+                        <a href="{% url 'activities:activity_calendar' %}" class="btn btn-outline-success w-100">
+                            Vedi calendario
+                        </a>
+                    {% endif %}
+                </div>
+            </section>
+
+            {% if activity.requires_booking and user.is_authenticated and user.is_staff %}
+                <section class="card shadow-sm clean-card mt-4">
+                    <div class="card-body">
+                        <h2 class="h5 mb-3">
+                            Partecipanti
+                        </h2>
+
+                        {% if activity_bookings %}
+                            <ul class="list-group list-group-flush">
+                                {% for booking in activity_bookings %}
+                                    <li class="list-group-item px-0">
+                                        {{ booking.user.username }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-muted mb-0">
+                                Nessun partecipante prenotato.
+                            </p>
+                        {% endif %}
+                    </div>
+                </section>
             {% endif %}
         </div>
     </div>

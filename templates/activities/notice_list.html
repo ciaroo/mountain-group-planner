@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Avvisi{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">Bacheca avvisi</h2>
+            <p class="text-muted mb-0">
+                Comunicazioni importanti per tutti i partecipanti.
+            </p>
+        </div>
+
+        {% if user.is_staff %}
+            <a href="{% url 'activities:create_notice' %}" class="btn btn-success">
+                Crea avviso
+            </a>
+        {% endif %}
+    </div>
+
+    {% if notices %}
+        <div class="row">
+            {% for notice in notices %}
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h3 class="h5 mb-0">{{ notice.title }}</h3>
+
+                                {% if notice.priority == "urgent" %}
+                                    <span class="badge text-bg-danger">Urgente</span>
+                                {% elif notice.priority == "important" %}
+                                    <span class="badge text-bg-warning">Importante</span>
+                                {% else %}
+                                    <span class="badge text-bg-secondary">Normale</span>
+                                {% endif %}
+                            </div>
+
+                            {% if not notice.is_active %}
+                                <div class="alert alert-secondary py-2">
+                                    Avviso non attivo
+                                </div>
+                            {% endif %}
+
+                            <p>{{ notice.content }}</p>
+
+                            <p class="text-muted small mb-3">
+                                Pubblicato da {{ notice.created_by.username }} il {{ notice.created_at|date:"d F Y H:i" }}
+                            </p>
+
+                            {% if user.is_staff %}
+                                <div class="d-flex gap-2">
+                                    <a href="{% url 'activities:update_notice' notice.pk %}" class="btn btn-outline-primary btn-sm">
+                                        Modifica
+                                    </a>
+
+                                    <a href="{% url 'activities:delete_notice' notice.pk %}" class="btn btn-outline-danger btn-sm">
+                                        Elimina
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-warning">
+            Non ci sono avvisi da mostrare.
+        </div>
+    {% endif %}
+{% endblock %}

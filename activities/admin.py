@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Activity, Booking, Category
+from .models import Activity, Booking, Category, Notice
 
 
 @admin.register(Category)
@@ -30,3 +30,16 @@ class BookingAdmin(admin.ModelAdmin):
     list_display = ("user", "activity", "created_at")
     list_filter = ("activity", "created_at")
     search_fields = ("user__username", "activity__title")
+
+
+@admin.register(Notice)
+class NoticeAdmin(admin.ModelAdmin):
+    list_display = (
+        "title",
+        "priority",
+        "is_active",
+        "created_by",
+        "created_at",
+    )
+    list_filter = ("priority", "is_active", "created_at")
+    search_fields = ("title", "content")

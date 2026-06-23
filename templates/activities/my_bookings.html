@@ -23,11 +23,11 @@
                             </h3>
 
                             <p class="mb-1">
-                                <strong>Data:</strong> {{ booking.activity.date }}
+                                <strong>Data:</strong> {{ booking.activity.date|date:"l d F Y" }}
                             </p>
 
                             <p class="mb-1">
-                                <strong>Orario:</strong> {{ booking.activity.start_time }}
+                                <strong>Orario:</strong> {{ booking.activity.start_time|time:"H:i" }}
                             </p>
 
                             <p class="mb-3">

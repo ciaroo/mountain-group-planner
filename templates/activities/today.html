@@ -8,7 +8,7 @@
 
         {% if selected_date %}
             <p class="text-muted mb-0">
-                Attività previste per {{ selected_date }}.
+                Attività previste per {{ selected_date|date:"l d F Y" }}.
             </p>
         {% else %}
             <p class="text-muted mb-0">
@@ -23,7 +23,7 @@
                 <div class="card shadow-sm h-100">
                     <div class="card-body">
                         <h3 class="h6 text-muted">Data</h3>
-                        <p class="fs-5 fw-bold mb-0">{{ selected_date }}</p>
+                        <p class="fs-5 fw-bold mb-0">{{ selected_date|date:"l d F Y" }}</p>
                     </div>
                 </div>
             </div>
@@ -58,9 +58,9 @@
                                 <strong>{{ booking.activity.title }}</strong>
                                 <br>
                                 <span class="text-muted">
-                                    {{ booking.activity.start_time }}
+                                    {{ booking.activity.start_time|time:"H:i" }}
                                     {% if booking.activity.end_time %}
-                                        - {{ booking.activity.end_time }}
+                                        - {{ booking.activity.end_time|time:"H:i" }}
                                     {% else %}
                                         - durata stimata 3 ore
                                     {% endif %}
@@ -86,9 +86,9 @@
                                         <strong>{{ activity.title }}</strong>
                                         <br>
                                         <span class="text-muted">
-                                            {{ activity.start_time }}
+                                            {{ activity.start_time|time:"H:i" }}
                                             {% if activity.end_time %}
-                                                - {{ activity.end_time }}
+                                                - {{ activity.end_time|time:"H:i" }}
                                             {% else %}
                                                 - durata stimata 3 ore
                                             {% endif %}

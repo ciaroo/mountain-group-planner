@@ -3,52 +3,93 @@
 {% block title %}Calendario{% endblock %}
 
 {% block content %}
-    <div class="mb-4">
-        <h2 class="mb-1">Calendario attività</h2>
-        <p class="text-muted mb-0">
-            Programma della vacanza da sabato a sabato.
-        </p>
-    </div>
+    <section class="page-header mb-4">
+        <div>
+            <p class="section-label mb-2">Calendario</p>
 
-    {% if calendar_days %}
-        <div class="calendar-grid">
-            {% for day in calendar_days %}
-                <div class="calendar-day card shadow-sm">
-                    <div class="card-header bg-success text-white">
-                        <strong>{{ day.date|date:"l" }}</strong>
-                        <br>
-                        <small>{{ day.date }}</small>
-                    </div>
+            <h1 class="mb-2">
+                Calendario della settimana
+            </h1>
 
+            <p class="text-muted mb-0">
+                Qui trovi sia le attività prenotabili sia gli eventi di gruppo.
+            </p>
+        </div>
+
+        {% if user.is_authenticated and user.is_staff %}
+            <a href="{% url 'activities:create_activity' %}" class="btn btn-success">
+                Crea attività
+            </a>
+        {% endif %}
+    </section>
+
+    {% if activities_by_date %}
+        <section class="calendar-grid">
+            {% for date, activities in activities_by_date.items %}
+                <article class="card shadow-sm clean-card calendar-day">
                     <div class="card-body">
-                        {% if day.activities %}
-                            {% for activity in day.activities %}
-                                <div class="calendar-activity mb-2 p-2 rounded">
-                                    <strong>
-                                        <a href="{% url 'activities:activity_detail' activity.pk %}" class="text-decoration-none">
-                                            {{ activity.title }}
-                                        </a>
-                                    </strong>
+                        <div class="section-label">
+                            {{ date|date:"l" }}
+                        </div>
 
-                                    <br>
+                        <h2 class="h5 mb-3">
+                            {{ date|date:"d F Y" }}
+                        </h2>
 
-                                    <small class="text-muted">
-                                        {{ activity.start_time }} · {{ activity.meeting_place }}
-                                    </small>
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <p class="text-muted mb-0">
-                                Nessuna attività.
-                            </p>
-                        {% endif %}
+                        {% for activity in activities %}
+                            <div class="calendar-activity rounded p-3 mb-3">
+                                {% if activity.requires_booking %}
+                                    <span class="badge text-bg-success mb-2">
+                                        Prenotabile
+                                    </span>
+                                {% else %}
+                                    <span class="badge text-bg-info mb-2">
+                                        Evento di gruppo
+                                    </span>
+                                {% endif %}
+
+                                <h3 class="h6 mb-1">
+                                    <a
+                                        href="{% url 'activities:activity_detail' activity.pk %}"
+                                        class="text-decoration-none text-dark"
+                                    >
+                                        {{ activity.title }}
+                                    </a>
+                                </h3>
+
+                                <p class="text-muted small mb-1">
+                                    {{ activity.start_time|time:"H:i" }}
+                                    {% if activity.end_time %}
+                                        - {{ activity.end_time|time:"H:i" }}
+                                    {% else %}
+                                        - durata stimata 3 ore
+                                    {% endif %}
+                                </p>
+
+                                <p class="text-muted small mb-0">
+                                    {{ activity.meeting_place }}
+                                </p>
+                            </div>
+                        {% endfor %}
                     </div>
-                </div>
+                </article>
             {% endfor %}
-        </div>
+        </section>
     {% else %}
-        <div class="alert alert-warning">
-            Non ci sono attività in calendario.
-        </div>
+        <section class="empty-state">
+            <h2 class="h4">
+                Nessuna attività in calendario
+            </h2>
+
+            <p class="text-muted mb-3">
+                Non sono ancora state create attività o eventi di gruppo.
+            </p>
+
+            {% if user.is_authenticated and user.is_staff %}
+                <a href="{% url 'activities:create_activity' %}" class="btn btn-success">
+                    Crea la prima attività
+                </a>
+            {% endif %}
+        </section>
     {% endif %}
 {% endblock %}

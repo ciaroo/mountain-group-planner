@@ -1,12 +1,19 @@
 {% extends "base.html" %}
 
-{% block title %}Attività disponibili{% endblock %}
+{% block title %}Attività{% endblock %}
 
 {% block content %}
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <section class="page-header mb-4">
         <div>
-            <h2 class="mb-1">Attività disponibili</h2>
-            <p class="text-muted mb-0">Scegli le attività a cui vuoi partecipare durante la vacanza.</p>
+            <p class="section-label mb-2">Attività</p>
+
+            <h1 class="mb-2">
+                Scegli cosa fare durante la vacanza
+            </h1>
+
+            <p class="text-muted mb-0">
+                Cerca le attività disponibili, controlla i posti e prenotati a quelle che ti interessano.
+            </p>
         </div>
 
         {% if user.is_staff %}
@@ -14,83 +21,83 @@
                 Crea attività
             </a>
         {% endif %}
-    </div>
+    </section>
 
-    <form method="get" class="card shadow-sm mb-4">
+    <section class="card shadow-sm clean-card mb-4">
         <div class="card-body">
-            <div class="row align-items-end">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Cerca attività</label>
-                    <input
-                        type="text"
-                        name="q"
-                        class="form-control"
-                        placeholder="Cerca per titolo, descrizione o luogo..."
-                        value="{{ search_query }}"
-                    >
+            <form method="get">
+                <div class="row align-items-end">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label class="form-label">Cerca</label>
+                        <input
+                            type="text"
+                            name="q"
+                            class="form-control app-input"
+                            placeholder="Nome attività, luogo o descrizione..."
+                            value="{{ search_query }}"
+                        >
+                    </div>
+
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <label class="form-label">Categoria</label>
+                        <select name="category" class="form-select app-input">
+                            <option value="">Tutte le categorie</option>
+
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ category.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-success w-100">
+                            Filtra
+                        </button>
+                    </div>
                 </div>
 
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Categoria</label>
-                    <select name="category" class="form-select">
-                        <option value="">Tutte le categorie</option>
-
-                        {% for category in categories %}
-                            <option value="{{ category.id }}" {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}>
-                                {{ category.name }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="col-md-2 mb-3">
-                    <button type="submit" class="btn btn-success w-100">
-                        Filtra
-                    </button>
-                </div>
-            </div>
-
-            {% if search_query or selected_category %}
-                <a href="{% url 'activities:activity_list' %}" class="btn btn-outline-secondary btn-sm">
-                    Rimuovi filtri
-                </a>
-            {% endif %}
+                {% if search_query or selected_category %}
+                    <div class="mt-3">
+                        <a href="{% url 'activities:activity_list' %}" class="btn btn-outline-secondary btn-sm">
+                            Rimuovi filtri
+                        </a>
+                    </div>
+                {% endif %}
+            </form>
         </div>
-    </form>
+    </section>
 
     {% if activities %}
-        <div class="row">
+        <div class="activity-feed">
             {% for activity in activities %}
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body">
-                            <h3 class="card-title h5">
-                                <a href="{% url 'activities:activity_detail' activity.pk %}" class="text-decoration-none">
+                <article class="activity-app-card">
+                    <div class="activity-card-image">
+                        {% if activity.image %}
+                            <img src="{{ activity.image.url }}" alt="{{ activity.title }}">
+                        {% else %}
+                            <div class="activity-card-image-placeholder">
+                                <span>Mountain Planner</span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="activity-main">
+                        <div class="activity-card-top">
+                            <div>
+                                {% if activity.category %}
+                                    <span class="activity-category">
+                                        {{ activity.category }}
+                                    </span>
+                                {% endif %}
+
+                                <h2 class="h4 mb-2">
                                     {{ activity.title }}
-                                </a>
-                            </h3>
+                                </h2>
+                            </div>
 
-                            <p class="mb-1">
-                                <strong>Categoria:</strong> {{ activity.category }}
-                            </p>
-
-                            <p class="mb-1">
-                                <strong>Data:</strong> {{ activity.date }}
-                            </p>
-
-                            <p class="mb-1">
-                                <strong>Orario:</strong> {{ activity.start_time }}
-                            </p>
-
-                            <p class="mb-1">
-                                <strong>Ritrovo:</strong> {{ activity.meeting_place }}
-                            </p>
-                            <p class="mb-2">
-                                <strong>Posti disponibili:</strong>
-                                {{ activity.available_spots }} / {{ activity.max_participants }}
-                            </p>
-
-                            <p class="mb-3">
+                            <div>
                                 {% if activity.is_full %}
                                     <span class="badge text-bg-danger">Completa</span>
                                 {% elif activity.is_almost_full %}
@@ -98,19 +105,66 @@
                                 {% else %}
                                     <span class="badge text-bg-success">Disponibile</span>
                                 {% endif %}
-                            </p>
+                            </div>
+                        </div>
 
-                            <a href="{% url 'activities:activity_detail' activity.pk %}" class="btn btn-outline-success btn-sm">
-                                Dettagli
-                            </a>
+                        <p class="activity-description">
+                            {{ activity.description|truncatechars:120 }}
+                        </p>
+
+                        <div class="activity-meta">
+                            <span>
+                                {{ activity.date|date:"l d F Y" }}
+                            </span>
+
+                            <span>
+                                {{ activity.start_time|time:"H:i" }}
+                                {% if activity.end_time %}
+                                    - {{ activity.end_time|time:"H:i" }}
+                                {% else %}
+                                    - durata stimata 3 ore
+                                {% endif %}
+                            </span>
+
+                            <span>
+                                {{ activity.meeting_place }}
+                            </span>
                         </div>
                     </div>
-                </div>
+
+                    <div class="activity-side">
+                        <div class="spots-box">
+                            <span class="spots-number">
+                                {{ activity.available_spots }}
+                            </span>
+
+                            <span class="spots-label">
+                                posti disponibili
+                            </span>
+
+                            <span class="spots-total">
+                                su {{ activity.max_participants }}
+                            </span>
+                        </div>
+
+                        <a href="{% url 'activities:activity_detail' activity.pk %}" class="btn btn-success w-100">
+                            Apri attività
+                        </a>
+                    </div>
+                </article>
             {% endfor %}
         </div>
     {% else %}
-        <div class="alert alert-warning">
-            Nessuna attività trovata con i filtri selezionati.
-        </div>
+        <section class="empty-state">
+            <h2 class="h4">Nessuna attività trovata</h2>
+
+            <p class="text-muted mb-3">
+                Non ci sono attività corrispondenti ai filtri selezionati.
+            </p>
+
+            <a href="{% url 'activities:activity_list' %}" class="btn btn-outline-success">
+                Mostra tutte le attività
+            </a>
+        </section>
     {% endif %}
 {% endblock %}

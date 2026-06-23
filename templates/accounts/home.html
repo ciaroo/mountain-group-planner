@@ -1,0 +1,362 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <section
+        class="home-hero-image mb-4"
+        {% if hero_activity and hero_activity.image %}
+            style="background-image: url('{{ hero_activity.image.url }}');"
+        {% else %}
+            style="background-image: url('{% static 'img/home-hero.jpg' %}');"
+        {% endif %}
+    >
+        <div class="home-hero-overlay">
+            <div class="home-hero-content">
+                <p class="home-hero-kicker">
+                    Attività principale
+                </p>
+
+                {% if hero_activity %}
+                    <h1>
+                        {{ hero_activity.title }}
+                    </h1>
+
+                    <p class="home-hero-description">
+                        {{ hero_activity.description|truncatechars:150 }}
+                    </p>
+
+                    <div class="home-hero-meta">
+                        <span>{{ hero_activity.date|date:"l d F Y" }}</span>
+                        <span>{{ hero_activity.start_time|time:"H:i" }}</span>
+                        <span>{{ hero_activity.meeting_place }}</span>
+                    </div>
+
+                    <div class="home-hero-buttons">
+                        <a href="{% url 'activities:activity_calendar' %}" class="btn btn-light">
+                            Vedi calendario
+                        </a>
+
+                        <a href="{% url 'activities:activity_detail' hero_activity.pk %}" class="btn btn-outline-light">
+                            Dettagli evento
+                        </a>
+                    </div>
+                {% else %}
+                    <h1>
+                        Mountain Group Planner
+                    </h1>
+
+                    <p class="home-hero-description">
+                        Organizza attività, avvisi, prenotazioni e informazioni utili per la vacanza di gruppo.
+                    </p>
+
+                    <div class="home-hero-buttons">
+                        <a href="{% url 'activities:activity_calendar' %}" class="btn btn-light">
+                            Vedi calendario
+                        </a>
+
+                        <a href="{% url 'activities:activity_list' %}" class="btn btn-outline-light">
+                            Cerca attività
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <section class="home-grid">
+        <article class="home-panel home-panel-large home-panel-notice">
+            <div>
+                <div class="section-label">Avvisi</div>
+
+                <h2 class="home-card-title">
+                    Ultimo avviso
+                </h2>
+
+                {% if latest_notice %}
+                    <div class="mb-3">
+                        {% if latest_notice.priority == "urgent" %}
+                            <span class="badge text-bg-danger mb-3">Urgente</span>
+                        {% elif latest_notice.priority == "important" %}
+                            <span class="badge text-bg-warning mb-3">Importante</span>
+                        {% else %}
+                            <span class="badge text-bg-secondary mb-3">Normale</span>
+                        {% endif %}
+
+                        <h3 class="home-event-title">
+                            {{ latest_notice.title }}
+                        </h3>
+
+                        <p class="text-muted mb-0">
+                            {{ latest_notice.content|truncatechars:180 }}
+                        </p>
+                    </div>
+                {% else %}
+                    <p class="home-event-title-small mb-3">
+                        Nessun avviso
+                    </p>
+
+                    <p class="text-muted">
+                        Non ci sono ancora avvisi pubblicati.
+                    </p>
+                {% endif %}
+            </div>
+
+            <div>
+                <a href="{% url 'activities:notice_list' %}" class="btn btn-success">
+                    Leggi tutti gli avvisi
+                </a>
+            </div>
+        </article>
+
+        <article class="home-panel home-panel-small home-panel-profile">
+            <div>
+                <div class="section-label">Profilo</div>
+
+                <h2 class="home-card-title">
+                    Le tue informazioni
+                </h2>
+
+                {% if user.is_authenticated %}
+                    <p class="home-event-title-small mb-3">
+                        {% if profile.display_name %}
+                            {{ profile.display_name }}
+                        {% else %}
+                            {{ user.username }}
+                        {% endif %}
+                    </p>
+
+                    <div class="profile-summary-list">
+                        <div class="profile-summary-item">
+                            <span>Allergie</span>
+
+                            {% if profile.allergies %}
+                                <strong>{{ profile.allergies|truncatechars:45 }}</strong>
+                            {% else %}
+                                <strong>Non indicate</strong>
+                            {% endif %}
+                        </div>
+
+                        <div class="profile-summary-item">
+                            <span>Preferenze</span>
+
+                            {% if profile.food_preferences %}
+                                <strong>{{ profile.food_preferences|truncatechars:45 }}</strong>
+                            {% else %}
+                                <strong>Non indicate</strong>
+                            {% endif %}
+                        </div>
+
+                        <div class="profile-summary-item">
+                            <span>Auto</span>
+
+                            {% if profile.has_car %}
+                                <strong>
+                                    Sì
+                                    {% if profile.car_seats %}
+                                        · {{ profile.car_seats }} posti
+                                    {% endif %}
+                                </strong>
+                            {% else %}
+                                <strong>No</strong>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="home-event-title-small mb-3">
+                        Accesso richiesto
+                    </p>
+
+                    <p class="text-muted">
+                        Accedi per compilare il tuo profilo personale.
+                    </p>
+                {% endif %}
+            </div>
+
+            <div>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'accounts:edit_profile' %}" class="btn btn-outline-success">
+                        Modifica profilo
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline-success">
+                        Accedi
+                    </a>
+                {% endif %}
+            </div>
+        </article>
+
+        <article class="home-panel home-panel-medium">
+            <div>
+                <div class="section-label">Programma</div>
+
+                <h2 class="home-card-title">
+                    Prossima attività del giorno
+                </h2>
+
+                {% if next_today_activity %}
+                    <div class="mb-3">
+                        <h3 class="home-event-title">
+                            {{ next_today_activity.title }}
+                        </h3>
+
+                        <p class="text-muted mb-1">
+                            {{ next_today_activity.date|date:"l d F Y" }} · {{ next_today_activity.start_time|time:"H:i" }}
+                        </p>
+
+                        <p class="text-muted mb-0">
+                            Ritrovo: {{ next_today_activity.meeting_place }}
+                        </p>
+                    </div>
+                {% else %}
+                    <p class="home-event-title-small mb-3">
+                        Nessuna attività
+                    </p>
+
+                    <p class="text-muted">
+                        Non ci sono attività nel programma.
+                    </p>
+                {% endif %}
+            </div>
+
+            <div>
+                <a href="{% url 'activities:today_program' %}" class="btn btn-success">
+                    Vedi programma
+                </a>
+            </div>
+        </article>
+
+        <article class="home-panel home-panel-medium home-panel-booking">
+            <div>
+                <div class="section-label">Prenotazioni</div>
+
+                <h2 class="home-card-title">
+                    La tua prossima prenotazione
+                </h2>
+
+                {% if user.is_authenticated %}
+                    {% if next_user_booking %}
+                        <div class="mb-3">
+                            <h3 class="home-event-title">
+                                {{ next_user_booking.activity.title }}
+                            </h3>
+
+                            <p class="text-muted mb-1">
+                                {{ next_user_booking.activity.date|date:"l d F Y" }} · {{ next_user_booking.activity.start_time|time:"H:i" }}
+                            </p>
+
+                            <p class="text-muted mb-0">
+                                Prenotazioni totali: {{ total_bookings }}
+                            </p>
+                        </div>
+                    {% else %}
+                        <p class="home-event-title-small mb-3">
+                            Nessuna prenotazione
+                        </p>
+
+                        <p class="text-muted">
+                            Non hai ancora prenotazioni.
+                        </p>
+                    {% endif %}
+                {% else %}
+                    <p class="home-event-title-small mb-3">
+                        Accesso richiesto
+                    </p>
+
+                    <p class="text-muted">
+                        Accedi per vedere le tue prenotazioni.
+                    </p>
+                {% endif %}
+            </div>
+
+            <div>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'activities:my_bookings' %}" class="btn btn-success">
+                        Vedi prenotazioni
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-success">
+                        Accedi
+                    </a>
+                {% endif %}
+            </div>
+        </article>
+
+        <article class="home-panel home-panel-wide home-panel-explore">
+            <div>
+                <div class="section-label">Esplora</div>
+
+                <h2 class="home-card-title">
+                    Esplora la settimana
+                </h2>
+
+                {% if next_available_activity %}
+                    <p class="text-muted mb-2">
+                        Prossima attività disponibile
+                    </p>
+
+                    <p class="home-event-title-small mb-1">
+                        {{ next_available_activity.title }}
+                    </p>
+
+                    <p class="text-muted mb-0">
+                        {{ next_available_activity.date|date:"l d F Y" }} · {{ next_available_activity.start_time|time:"H:i" }}
+                    </p>
+                {% else %}
+                    <p class="home-event-title-small mb-3">
+                        Nessuna attività disponibile
+                    </p>
+
+                    <p class="text-muted mb-0">
+                        Non ci sono ancora attività disponibili.
+                    </p>
+                {% endif %}
+            </div>
+
+            <div class="home-actions">
+                <a href="{% url 'activities:activity_list' %}" class="btn btn-success">
+                    Cerca attività
+                </a>
+
+                <a href="{% url 'activities:activity_calendar' %}" class="btn btn-outline-success">
+                    Apri calendario
+                </a>
+            </div>
+        </article>
+
+        {% if user.is_authenticated and user.is_staff %}
+            <article class="home-panel home-panel-wide organizer-box">
+                <div>
+                    <div class="section-label">Gestione</div>
+
+                    <h2 class="home-card-title">
+                        Area organizzatore
+                    </h2>
+
+                    <p class="home-event-title-small mb-2">
+                        Strumenti rapidi
+                    </p>
+
+                    <p class="text-muted mb-0">
+                        Crea attività, pubblica avvisi e gestisci la logistica della vacanza.
+                    </p>
+                </div>
+
+                <div class="home-actions">
+                    <a href="{% url 'activities:create_activity' %}" class="btn btn-success">
+                        Crea attività
+                    </a>
+
+                    <a href="{% url 'activities:create_notice' %}" class="btn btn-outline-success">
+                        Crea avviso
+                    </a>
+
+                    <a href="{% url 'accounts:cars_organization' %}" class="btn btn-outline-success">
+                        Organizzazione auto
+                    </a>
+                </div>
+            </article>
+        {% endif %}
+    </section>
+{% endblock %}
