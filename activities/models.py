@@ -52,6 +52,10 @@ class Activity(models.Model):
     def is_full(self):
         return self.available_spots <= 0
 
+    @property
+    def is_almost_full(self):
+        return not self.is_full and self.available_spots <= 3
+
     def __str__(self):
         return self.title
 

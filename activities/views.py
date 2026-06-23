@@ -1,17 +1,35 @@
+from datetime import datetime, timedelta
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from datetime import timedelta
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .models import Activity, Booking
 from .forms import ActivityForm
+from .models import Activity, Booking, Category
 
 
 def activity_list(request):
     activities = Activity.objects.all().order_by("date", "start_time")
+    categories = Category.objects.all().order_by("name")
+
+    search_query = request.GET.get("q", "")
+    selected_category = request.GET.get("category", "")
+
+    if search_query:
+        activities = (
+            activities.filter(title__icontains=search_query)
+            | activities.filter(description__icontains=search_query)
+            | activities.filter(meeting_place__icontains=search_query)
+        )
+
+    if selected_category:
+        activities = activities.filter(category_id=selected_category)
 
     context = {
-        "activities": activities
+        "activities": activities,
+        "categories": categories,
+        "search_query": search_query,
+        "selected_category": selected_category,
     }
 
     return render(request, "activities/activity_list.html", context)
@@ -35,10 +53,11 @@ def activity_detail(request, pk):
     context = {
         "activity": activity,
         "user_booking": user_booking,
-        "activity_bookings": activity_bookings
+        "activity_bookings": activity_bookings,
     }
 
     return render(request, "activities/activity_detail.html", context)
+
 
 def book_activity(request, pk):
     activity = get_object_or_404(Activity, pk=pk)
@@ -49,6 +68,50 @@ def book_activity(request, pk):
 
     if activity.is_full:
         messages.error(request, "Non ci sono più posti disponibili per questa attività.")
+        return redirect("activities:activity_detail", pk=activity.pk)
+
+    activity_start = datetime.combine(activity.date, activity.start_time)
+
+    if activity.end_time:
+        activity_end = datetime.combine(activity.date, activity.end_time)
+    else:
+        activity_end = activity_start + timedelta(hours=3)
+
+    user_bookings = Booking.objects.filter(
+        user=request.user,
+        activity__date=activity.date
+    ).select_related("activity")
+
+    conflicting_booking = None
+
+    for booking in user_bookings:
+        booked_activity = booking.activity
+
+        booked_start = datetime.combine(
+            booked_activity.date,
+            booked_activity.start_time
+        )
+
+        if booked_activity.end_time:
+            booked_end = datetime.combine(
+                booked_activity.date,
+                booked_activity.end_time
+            )
+        else:
+            booked_end = booked_start + timedelta(hours=3)
+
+        has_conflict = activity_start < booked_end and activity_end > booked_start
+
+        if has_conflict and booked_activity != activity:
+            conflicting_booking = booking
+            break
+
+    if conflicting_booking:
+        messages.error(
+            request,
+            f"Non puoi prenotarti: sei già impegnato con "
+            f"'{conflicting_booking.activity.title}' in quell'orario."
+        )
         return redirect("activities:activity_detail", pk=activity.pk)
 
     booking, created = Booking.objects.get_or_create(
@@ -81,6 +144,7 @@ def cancel_booking(request, pk):
 
     return redirect("activities:activity_detail", pk=activity.pk)
 
+
 @login_required
 def my_bookings(request):
     bookings = Booking.objects.filter(
@@ -96,6 +160,7 @@ def my_bookings(request):
 
     return render(request, "activities/my_bookings.html", context)
 
+
 @login_required
 def create_activity(request):
     if not request.user.is_staff:
@@ -109,7 +174,6 @@ def create_activity(request):
             activity = form.save(commit=False)
             activity.created_by = request.user
             activity.save()
-
             messages.success(request, "Attività creata correttamente.")
             return redirect("activities:activity_detail", pk=activity.pk)
     else:
@@ -120,6 +184,7 @@ def create_activity(request):
     }
 
     return render(request, "activities/activity_form.html", context)
+
 
 @login_required
 def update_activity(request, pk):
@@ -146,6 +211,7 @@ def update_activity(request, pk):
 
     return render(request, "activities/activity_form.html", context)
 
+
 @login_required
 def delete_activity(request, pk):
     activity = get_object_or_404(Activity, pk=pk)
@@ -165,6 +231,7 @@ def delete_activity(request, pk):
 
     return render(request, "activities/activity_confirm_delete.html", context)
 
+
 def activity_calendar(request):
     activities = Activity.objects.all().order_by("date", "start_time")
 
@@ -178,6 +245,7 @@ def activity_calendar(request):
     if start_date:
         for i in range(8):
             current_date = start_date + timedelta(days=i)
+
             day_activities = activities.filter(date=current_date)
 
             calendar_days.append({

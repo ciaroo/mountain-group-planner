@@ -16,6 +16,48 @@
         {% endif %}
     </div>
 
+    <form method="get" class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row align-items-end">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Cerca attività</label>
+                    <input
+                        type="text"
+                        name="q"
+                        class="form-control"
+                        placeholder="Cerca per titolo, descrizione o luogo..."
+                        value="{{ search_query }}"
+                    >
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Categoria</label>
+                    <select name="category" class="form-select">
+                        <option value="">Tutte le categorie</option>
+
+                        {% for category in categories %}
+                            <option value="{{ category.id }}" {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-2 mb-3">
+                    <button type="submit" class="btn btn-success w-100">
+                        Filtra
+                    </button>
+                </div>
+            </div>
+
+            {% if search_query or selected_category %}
+                <a href="{% url 'activities:activity_list' %}" class="btn btn-outline-secondary btn-sm">
+                    Rimuovi filtri
+                </a>
+            {% endif %}
+        </div>
+    </form>
+
     {% if activities %}
         <div class="row">
             {% for activity in activities %}
@@ -43,10 +85,19 @@
                             <p class="mb-1">
                                 <strong>Ritrovo:</strong> {{ activity.meeting_place }}
                             </p>
-
-                            <p class="mb-3">
+                            <p class="mb-2">
                                 <strong>Posti disponibili:</strong>
                                 {{ activity.available_spots }} / {{ activity.max_participants }}
+                            </p>
+
+                            <p class="mb-3">
+                                {% if activity.is_full %}
+                                    <span class="badge text-bg-danger">Completa</span>
+                                {% elif activity.is_almost_full %}
+                                    <span class="badge text-bg-warning">Quasi piena</span>
+                                {% else %}
+                                    <span class="badge text-bg-success">Disponibile</span>
+                                {% endif %}
                             </p>
 
                             <a href="{% url 'activities:activity_detail' activity.pk %}" class="btn btn-outline-success btn-sm">
@@ -59,7 +110,7 @@
         </div>
     {% else %}
         <div class="alert alert-warning">
-            Non ci sono attività disponibili.
+            Nessuna attività trovata con i filtri selezionati.
         </div>
     {% endif %}
 {% endblock %}
