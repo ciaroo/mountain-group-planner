@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Modifica profilo{% endblock %}
+
+{% block content %}
+    <div class="mb-4">
+        <h2 class="mb-1">Modifica profilo</h2>
+        <p class="text-muted mb-0">
+            Aggiorna le informazioni utili per l'organizzazione della vacanza.
+        </p>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Nome visualizzato</label>
+                    {{ form.display_name }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Allergie</label>
+                    {{ form.allergies }}
+                    <div class="form-text">
+                        Esempio: frutta secca, lattosio, glutine...
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Preferenze alimentari</label>
+                    {{ form.food_preferences }}
+                    <div class="form-text">
+                        Esempio: vegetariano, vegano, no pesce...
+                    </div>
+                </div>
+
+                <div class="form-check mb-3">
+                    {{ form.has_car }}
+                    <label class="form-check-label">
+                        Auto disponibile
+                    </label>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Modello auto</label>
+                    {{ form.car_model }}
+                    <div class="form-text">
+                        Esempio: Fiat Panda, Toyota Yaris, Volkswagen Golf...
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Posti auto disponibili</label>
+                    {{ form.car_seats }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Note personali</label>
+                    {{ form.notes }}
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success">
+                        Salva profilo
+                    </button>
+
+                    <a href="{% url 'accounts:profile' %}" class="btn btn-outline-secondary">
+                        Annulla
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -3,42 +3,130 @@
 {% block title %}Profilo utente{% endblock %}
 
 {% block content %}
-    <div class="mb-4">
-        <h2 class="mb-1">Profilo utente</h2>
-        <p class="text-muted mb-0">
-            Informazioni principali dell'account.
-        </p>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">Profilo utente</h2>
+            <p class="text-muted mb-0">
+                Informazioni principali dell'account e preferenze personali.
+            </p>
+        </div>
+
+        <a href="{% url 'accounts:edit_profile' %}" class="btn btn-success">
+            Modifica profilo
+        </a>
     </div>
 
-    <div class="card shadow-sm">
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">Account</h3>
+
+                    <p>
+                        <strong>Username:</strong>
+                        {{ user.username }}
+                    </p>
+
+                    <p>
+                        <strong>Email:</strong>
+                        {% if user.email %}
+                            {{ user.email }}
+                        {% else %}
+                            <span class="text-muted">Non inserita</span>
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Ruolo:</strong>
+                        {% if user.is_staff %}
+                            <span class="badge text-bg-success">Organizzatore</span>
+                        {% else %}
+                            <span class="badge text-bg-secondary">Partecipante</span>
+                        {% endif %}
+                    </p>
+
+                    <p class="mb-0">
+                        <strong>Numero prenotazioni:</strong>
+                        {{ total_bookings }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">Informazioni personali</h3>
+
+                    <p>
+                        <strong>Nome visualizzato:</strong>
+                        {% if profile.display_name %}
+                            {{ profile.display_name }}
+                        {% else %}
+                            <span class="text-muted">Non inserito</span>
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Auto disponibile:</strong>
+                        {% if profile.has_car %}
+                            <span class="badge text-bg-success">Sì</span>
+                        {% else %}
+                            <span class="badge text-bg-secondary">No</span>
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Modello auto:</strong>
+                        {% if profile.car_model %}
+                            {{ profile.car_model }}
+                        {% else %}
+                            <span class="text-muted">Non inserito</span>
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Posti auto disponibili:</strong>
+                        {{ profile.car_seats }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
         <div class="card-body">
-            <p>
-                <strong>Username:</strong>
-                {{ user.username }}
-            </p>
+            <h3 class="h5 mb-3">Allergie e preferenze</h3>
 
             <p>
-                <strong>Email:</strong>
-                {% if user.email %}
-                    {{ user.email }}
+                <strong>Allergie:</strong>
+                {% if profile.allergies %}
+                    {{ profile.allergies }}
                 {% else %}
-                    <span class="text-muted">Non inserita</span>
-                {% endif %}
-            </p>
-
-            <p>
-                <strong>Ruolo:</strong>
-                {% if user.is_staff %}
-                    <span class="badge text-bg-success">Organizzatore</span>
-                {% else %}
-                    <span class="badge text-bg-secondary">Partecipante</span>
+                    <span class="text-muted">Nessuna allergia inserita.</span>
                 {% endif %}
             </p>
 
             <p class="mb-0">
-                <strong>Numero prenotazioni:</strong>
-                {{ total_bookings }}
+                <strong>Preferenze alimentari:</strong>
+                {% if profile.food_preferences %}
+                    {{ profile.food_preferences }}
+                {% else %}
+                    <span class="text-muted">Nessuna preferenza inserita.</span>
+                {% endif %}
             </p>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h3 class="h5 mb-3">Note personali</h3>
+
+            {% if profile.notes %}
+                <p class="mb-0">{{ profile.notes }}</p>
+            {% else %}
+                <p class="text-muted mb-0">Nessuna nota inserita.</p>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

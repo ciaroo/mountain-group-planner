@@ -1,7 +1,11 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
 from activities.models import Activity, Booking
+
+from .forms import ProfileForm
+from .models import Profile
 
 
 @login_required
@@ -26,14 +30,43 @@ def dashboard(request):
 
     return render(request, "accounts/dashboard.html", context)
 
+
 @login_required
 def profile(request):
+    profile_obj, created = Profile.objects.get_or_create(
+        user=request.user
+    )
+
     total_bookings = Booking.objects.filter(
         user=request.user
     ).count()
 
     context = {
-        "total_bookings": total_bookings
+        "profile": profile_obj,
+        "total_bookings": total_bookings,
     }
 
     return render(request, "accounts/profile.html", context)
+
+
+@login_required
+def edit_profile(request):
+    profile_obj, created = Profile.objects.get_or_create(
+        user=request.user
+    )
+
+    if request.method == "POST":
+        form = ProfileForm(request.POST, instance=profile_obj)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profilo aggiornato correttamente.")
+            return redirect("accounts:profile")
+    else:
+        form = ProfileForm(instance=profile_obj)
+
+    context = {
+        "form": form
+    }
+
+    return render(request, "accounts/profile_form.html", context)
