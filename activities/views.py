@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import ActivityForm, NoticeForm
@@ -67,66 +68,75 @@ def activity_detail(request, pk):
 
 @login_required
 def book_activity(request, pk):
-    activity = get_object_or_404(Activity, pk=pk)
-
-    if not activity.requires_booking:
-        messages.error(
-            request,
-            "Questa è un'attività di gruppo: non è necessaria la prenotazione."
-        )
-        return redirect("activities:activity_detail", pk=activity.pk)
-
-    if activity.is_full:
-        messages.error(request, "Questa attività è già al completo.")
-        return redirect("activities:activity_detail", pk=activity.pk)
-
-    activity_start = datetime.combine(activity.date, activity.start_time)
-
-    if activity.end_time:
-        activity_end = datetime.combine(activity.date, activity.end_time)
-    else:
-        activity_end = activity_start + timedelta(hours=3)
-
-    user_bookings_same_day = Booking.objects.filter(
-        user=request.user,
-        activity__date=activity.date
-    ).select_related("activity")
-
-    for booking in user_bookings_same_day:
-        booked_activity = booking.activity
-
-        booked_start = datetime.combine(
-            booked_activity.date,
-            booked_activity.start_time
+    with transaction.atomic():
+        activity = get_object_or_404(
+            Activity.objects.select_for_update(),
+            pk=pk
         )
 
-        if booked_activity.end_time:
-            booked_end = datetime.combine(
-                booked_activity.date,
-                booked_activity.end_time
-            )
-        else:
-            booked_end = booked_start + timedelta(hours=3)
-
-        activities_overlap = activity_start < booked_end and activity_end > booked_start
-
-        if activities_overlap:
+        if not activity.requires_booking:
             messages.error(
                 request,
-                "Non puoi prenotarti: hai già un'altra attività nello stesso orario."
+                "Questa è un'attività di gruppo: non è necessaria la prenotazione."
             )
             return redirect("activities:activity_detail", pk=activity.pk)
 
-    booking, created = Booking.objects.get_or_create(
-        user=request.user,
-        activity=activity
-    )
+        existing_booking = Booking.objects.filter(
+            user=request.user,
+            activity=activity
+        ).first()
 
-    if created:
-        messages.success(request, "Prenotazione effettuata correttamente.")
-    else:
-        messages.info(request, "Sei già prenotato a questa attività.")
+        if existing_booking:
+            messages.info(request, "Sei già prenotato a questa attività.")
+            return redirect("activities:activity_detail", pk=activity.pk)
 
+        if activity.is_full:
+            messages.error(request, "Questa attività è già al completo.")
+            return redirect("activities:activity_detail", pk=activity.pk)
+
+        activity_start = datetime.combine(activity.date, activity.start_time)
+
+        if activity.end_time:
+            activity_end = datetime.combine(activity.date, activity.end_time)
+        else:
+            activity_end = activity_start + timedelta(hours=3)
+
+        user_bookings_same_day = Booking.objects.filter(
+            user=request.user,
+            activity__date=activity.date
+        ).select_related("activity")
+
+        for booking in user_bookings_same_day:
+            booked_activity = booking.activity
+
+            booked_start = datetime.combine(
+                booked_activity.date,
+                booked_activity.start_time
+            )
+
+            if booked_activity.end_time:
+                booked_end = datetime.combine(
+                    booked_activity.date,
+                    booked_activity.end_time
+                )
+            else:
+                booked_end = booked_start + timedelta(hours=3)
+
+            activities_overlap = activity_start < booked_end and activity_end > booked_start
+
+            if activities_overlap:
+                messages.error(
+                    request,
+                    "Non puoi prenotarti: hai già un'altra attività nello stesso orario."
+                )
+                return redirect("activities:activity_detail", pk=activity.pk)
+
+        Booking.objects.create(
+            user=request.user,
+            activity=activity
+        )
+
+    messages.success(request, "Prenotazione effettuata correttamente.")
     return redirect("activities:activity_detail", pk=activity.pk)
 
 
