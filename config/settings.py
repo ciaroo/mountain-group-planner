@@ -147,3 +147,9 @@ CSRF_TRUSTED_ORIGINS = os.environ.get(
 CSRF_TRUSTED_ORIGINS = [
     origin for origin in CSRF_TRUSTED_ORIGINS if origin
 ]
+
+
+REGISTRATION_INVITE_CODE = os.environ.get(
+    "REGISTRATION_INVITE_CODE",
+    "MONTAGNA4.7"
+)

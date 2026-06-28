@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Riepilogo alimentare{% endblock %}
+
+{% block content %}
+    <div class="mb-4">
+        <div class="section-label">
+            Organizzazione
+        </div>
+
+        <h1 class="page-title mb-2">
+            Riepilogo allergie e preferenze
+        </h1>
+
+        <p class="text-muted mb-0">
+            Pagina utile per organizzare spesa, cene e turni cucina.
+        </p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="clean-card h-100">
+                <div class="card-body">
+                    <div class="section-label">
+                        Allergie
+                    </div>
+
+                    <h2 class="home-card-title mb-3">
+                        Persone con allergie
+                    </h2>
+
+                    {% if profiles_with_allergies %}
+                        <div class="vstack gap-3">
+                            {% for profile in profiles_with_allergies %}
+                                <div class="p-3 rounded border">
+                                    <strong>
+                                        {% if profile.display_name %}
+                                            {{ profile.display_name }}
+                                        {% elif profile.user.first_name or profile.user.last_name %}
+                                            {{ profile.user.first_name }} {{ profile.user.last_name }}
+                                        {% else %}
+                                            {{ profile.user.username }}
+                                        {% endif %}
+                                    </strong>
+
+                                    <p class="text-muted mb-0 mt-2">
+                                        {{ profile.allergies }}
+                                    </p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">
+                            Nessuna allergia indicata.
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="clean-card h-100">
+                <div class="card-body">
+                    <div class="section-label">
+                        Preferenze
+                    </div>
+
+                    <h2 class="home-card-title mb-3">
+                        Preferenze alimentari
+                    </h2>
+
+                    {% if profiles_with_preferences %}
+                        <div class="vstack gap-3">
+                            {% for profile in profiles_with_preferences %}
+                                <div class="p-3 rounded border">
+                                    <strong>
+                                        {% if profile.display_name %}
+                                            {{ profile.display_name }}
+                                        {% elif profile.user.first_name or profile.user.last_name %}
+                                            {{ profile.user.first_name }} {{ profile.user.last_name }}
+                                        {% else %}
+                                            {{ profile.user.username }}
+                                        {% endif %}
+                                    </strong>
+
+                                    <p class="text-muted mb-0 mt-2">
+                                        {{ profile.food_preferences }}
+                                    </p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">
+                            Nessuna preferenza alimentare indicata.
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="clean-card">
+                <div class="card-body">
+                    <div class="section-label">
+                        Note
+                    </div>
+
+                    <h2 class="home-card-title mb-3">
+                        Note utili dai profili
+                    </h2>
+
+                    {% if profiles_with_notes %}
+                        <div class="vstack gap-3">
+                            {% for profile in profiles_with_notes %}
+                                <div class="p-3 rounded border">
+                                    <strong>
+                                        {% if profile.display_name %}
+                                            {{ profile.display_name }}
+                                        {% elif profile.user.first_name or profile.user.last_name %}
+                                            {{ profile.user.first_name }} {{ profile.user.last_name }}
+                                        {% else %}
+                                            {{ profile.user.username }}
+                                        {% endif %}
+                                    </strong>
+
+                                    <p class="text-muted mb-0 mt-2">
+                                        {{ profile.notes }}
+                                    </p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">
+                            Nessuna nota indicata.
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

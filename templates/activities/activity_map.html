@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Mappa attività{% endblock %}
+
+{% block content %}
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+    <div class="page-header mb-4">
+        <div>
+            <div class="section-label">
+                Mappa
+            </div>
+
+            <h1 class="mb-2">
+                Mappa attività
+            </h1>
+
+            <p class="text-muted mb-0">
+                Visualizza sulla mappa i luoghi delle attività della vacanza.
+            </p>
+        </div>
+    </div>
+
+    <div class="clean-card">
+        <div class="card-body">
+            {% if map_activities %}
+                <div id="activity-map" class="activity-map"></div>
+
+                {{ map_activities|json_script:"map-activities-data" }}
+            {% else %}
+                <div class="empty-state">
+                    <h2 class="h5">
+                        Nessuna attività sulla mappa
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Aggiungi latitudine e longitudine alle attività per visualizzarle qui.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if map_activities %}
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+        <script>
+            const activities = JSON.parse(
+                document.getElementById("map-activities-data").textContent
+            );
+
+            const map = L.map("activity-map");
+
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                maxZoom: 19,
+                attribution: "&copy; OpenStreetMap"
+            }).addTo(map);
+
+            const bounds = [];
+
+            activities.forEach(function(activity) {
+                const position = [activity.latitude, activity.longitude];
+
+                bounds.push(position);
+
+                const googleMapsUrl = "https://www.google.com/maps?q="
+                    + activity.latitude
+                    + ","
+                    + activity.longitude;
+
+                const popupContent = `
+                    <div class="map-popup">
+                        <strong>${activity.title}</strong>
+
+                        <div class="text-muted small mt-1">
+                            ${activity.category}
+                        </div>
+
+                        <div class="mt-2">
+                            ${activity.date} · ${activity.start_time}
+                        </div>
+
+                        <div class="mt-1">
+                            Ritrovo: ${activity.meeting_place}
+                        </div>
+
+                        <div class="map-popup-actions mt-3">
+                            <a href="${activity.detail_url}" class="btn btn-success btn-sm">
+                                Dettagli
+                            </a>
+
+                            <a href="${googleMapsUrl}" target="_blank" rel="noopener" class="btn btn-outline-success btn-sm">
+                                Apri Google Maps
+                            </a>
+                        </div>
+                    </div>
+                `;
+
+                L.marker(position)
+                    .addTo(map)
+                    .bindPopup(popupContent);
+            });
+
+            if (bounds.length > 0) {
+                map.fitBounds(bounds, {
+                    padding: [40, 40]
+                });
+            } else {
+                map.setView([42.5, 12.5], 6);
+            }
+        </script>
+    {% endif %}
+{% endblock %}

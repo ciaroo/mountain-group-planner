@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}Lista partecipanti{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+        <div>
+            <div class="section-label">
+                Organizzazione
+            </div>
+
+            <h1 class="page-title mb-2">
+                Lista partecipanti
+            </h1>
+
+            <p class="text-muted mb-0">
+                Riepilogo degli utenti registrati, profili, auto e prenotazioni.
+            </p>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="clean-card h-100">
+                <div class="card-body">
+                    <div class="section-label">
+                        Totale
+                    </div>
+
+                    <h2 class="home-card-title mb-0">
+                        {{ total_participants }}
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        partecipanti
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="clean-card h-100">
+                <div class="card-body">
+                    <div class="section-label">
+                        Profili
+                    </div>
+
+                    <h2 class="home-card-title mb-0">
+                        {{ completed_profiles }}
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        profili compilati
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="clean-card h-100">
+                <div class="card-body">
+                    <div class="section-label">
+                        Auto
+                    </div>
+
+                    <h2 class="home-card-title mb-0">
+                        {{ participants_with_car }}
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        persone con auto
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="clean-card h-100">
+                <div class="card-body">
+                    <div class="section-label">
+                        Posti
+                    </div>
+
+                    <h2 class="home-card-title mb-0">
+                        {{ total_car_seats }}
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        posti auto dichiarati
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="clean-card">
+        <div class="card-body">
+            {% if participants %}
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Partecipante</th>
+                                <th>Email</th>
+                                <th>Allergie</th>
+                                <th>Preferenze</th>
+                                <th>Auto</th>
+                                <th>Prenotazioni</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for participant in participants %}
+                                <tr>
+                                    <td>
+                                        <strong>
+                                            {% if participant.first_name or participant.last_name %}
+                                                {{ participant.first_name }} {{ participant.last_name }}
+                                            {% else %}
+                                                {{ participant.username }}
+                                            {% endif %}
+                                        </strong>
+
+                                        <div class="text-muted small">
+                                            @{{ participant.username }}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        {% if participant.email %}
+                                            {{ participant.email }}
+                                        {% else %}
+                                            <span class="text-muted">Non indicata</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {% if participant.profile.allergies %}
+                                            {{ participant.profile.allergies|truncatechars:60 }}
+                                        {% else %}
+                                            <span class="text-muted">Nessuna</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {% if participant.profile.food_preferences %}
+                                            {{ participant.profile.food_preferences|truncatechars:60 }}
+                                        {% else %}
+                                            <span class="text-muted">Nessuna</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {% if participant.profile.has_car %}
+                                            <span class="badge text-bg-success">
+                                                Sì · {{ participant.profile.car_seats }} posti
+                                            </span>
+                                        {% else %}
+                                            <span class="badge text-bg-secondary">
+                                                No
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {{ participant.total_bookings }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">
+                    Non ci sono ancora partecipanti registrati.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

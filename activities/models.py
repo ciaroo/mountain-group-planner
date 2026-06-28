@@ -33,6 +33,20 @@ class Activity(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField(blank=True, null=True)
     meeting_place = models.CharField(max_length=200)
+    latitude = models.DecimalField(
+        max_digits=9,
+        decimal_places=6,
+        blank=True,
+        null=True,
+        verbose_name="Latitudine"
+    )
+    longitude = models.DecimalField(
+        max_digits=9,
+        decimal_places=6,
+        blank=True,
+        null=True,
+        verbose_name="Longitudine"
+    )
     max_participants = models.PositiveIntegerField()
     what_to_bring = models.TextField(blank=True)
     requires_booking = models.BooleanField(

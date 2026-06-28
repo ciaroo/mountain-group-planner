@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Riepilogo prenotazioni{% endblock %}
+
+{% block content %}
+    <div class="mb-4">
+        <div class="section-label">
+            Organizzazione
+        </div>
+
+        <h1 class="page-title mb-2">
+            Riepilogo prenotazioni
+        </h1>
+
+        <p class="text-muted mb-0">
+            Controlla rapidamente iscritti, posti occupati e posti disponibili per ogni attività prenotabile.
+        </p>
+    </div>
+
+    {% if activities %}
+        <div class="vstack gap-4">
+            {% for activity in activities %}
+                <div class="clean-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+                            <div>
+                                <div class="section-label">
+                                    {{ activity.date|date:"l d F Y" }} · {{ activity.start_time|time:"H:i" }}
+                                </div>
+
+                                <h2 class="home-card-title mb-1">
+                                    {{ activity.title }}
+                                </h2>
+
+                                <p class="text-muted mb-0">
+                                    Ritrovo: {{ activity.meeting_place }}
+                                </p>
+                            </div>
+
+                            <div class="text-end">
+                                {% if activity.is_full %}
+                                    <span class="badge text-bg-danger">
+                                        Completa
+                                    </span>
+                                {% elif activity.is_almost_full %}
+                                    <span class="badge text-bg-warning">
+                                        Quasi piena
+                                    </span>
+                                {% else %}
+                                    <span class="badge text-bg-success">
+                                        Disponibile
+                                    </span>
+                                {% endif %}
+
+                                <p class="text-muted mb-0 mt-2">
+                                    {{ activity.booked_count }} / {{ activity.max_participants }} iscritti
+                                </p>
+                            </div>
+                        </div>
+
+                        {% if activity.bookings.all %}
+                            <div class="table-responsive">
+                                <table class="table align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Iscritto</th>
+                                            <th>Email</th>
+                                            <th>Data prenotazione</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {% for booking in activity.bookings.all %}
+                                            <tr>
+                                                <td>
+                                                    <strong>
+                                                        {% if booking.user.first_name or booking.user.last_name %}
+                                                            {{ booking.user.first_name }} {{ booking.user.last_name }}
+                                                        {% else %}
+                                                            {{ booking.user.username }}
+                                                        {% endif %}
+                                                    </strong>
+
+                                                    <div class="text-muted small">
+                                                        @{{ booking.user.username }}
+                                                    </div>
+                                                </td>
+
+                                                <td>
+                                                    {% if booking.user.email %}
+                                                        {{ booking.user.email }}
+                                                    {% else %}
+                                                        <span class="text-muted">
+                                                            Non indicata
+                                                        </span>
+                                                    {% endif %}
+                                                </td>
+
+                                                <td>
+                                                    {{ booking.created_at|date:"d/m/Y H:i" }}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="text-muted mb-0">
+                                Nessun partecipante prenotato a questa attività.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="clean-card">
+            <div class="card-body">
+                <p class="text-muted mb-0">
+                    Non ci sono ancora attività prenotabili.
+                </p>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
