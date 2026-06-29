@@ -208,7 +208,7 @@ class ProfileForm(forms.ModelForm):
             "sex": forms.Select(attrs={"class": "form-select"}),
             "document_type": forms.Select(attrs={"class": "form-select"}),
             "document_number": forms.TextInput(attrs={"class": "form-control"}),
-            "document_issuing_authority": forms.Select(attrs={"class": "form-select"}),
+            "document_issuing_authority": forms.TextInput(attrs={"class": "form-control"}),
             "wants_linen_rental": forms.CheckboxInput(attrs={"class": "form-check-input"}),
             "allergies": forms.Textarea(attrs={"class": "form-control"}),
             "food_preferences": forms.Textarea(attrs={"class": "form-control"}),
@@ -220,3 +220,21 @@ class ProfileForm(forms.ModelForm):
         labels = {
             "wants_linen_rental": "Voglio noleggiare la biancheria al costo di 15€",
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        required_fields = [
+            "display_name",
+            "birth_date",
+            "birth_place",
+            "residence_place",
+            "residence_address",
+            "sex",
+            "document_type",
+            "document_number",
+            "document_issuing_authority",
+        ]
+
+        for field_name in required_fields:
+            self.fields[field_name].required = True
