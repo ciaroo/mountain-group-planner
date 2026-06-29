@@ -1,0 +1,202 @@
+[
+{
+  "model": "activities.category",
+  "pk": 1,
+  "fields": {
+    "name": "Escursione",
+    "description": ""
+  }
+},
+{
+  "model": "activities.category",
+  "pk": 2,
+  "fields": {
+    "name": "Gioco",
+    "description": ""
+  }
+},
+{
+  "model": "activities.category",
+  "pk": 3,
+  "fields": {
+    "name": "Sport",
+    "description": ""
+  }
+},
+{
+  "model": "activities.category",
+  "pk": 4,
+  "fields": {
+    "name": "Info utili",
+    "description": "Check-in, check-out, cene, spostamenti e comunicazioni organizzative."
+  }
+},
+{
+  "model": "activities.activity",
+  "pk": 1,
+  "fields": {
+    "title": "Check-in",
+    "category": 4,
+    "description": "",
+    "image": "activities/be197876-cf63-4963-a80d-02e04ef9b032.jpeg",
+    "date": "2026-08-02",
+    "start_time": "11:00:00",
+    "end_time": "12:00:00",
+    "meeting_place": "Casa",
+    "max_participants": null,
+    "price": null,
+    "what_to_bring": "",
+    "requires_booking": false,
+    "created_by": 3,
+    "created_at": "2026-06-28T12:11:11.361Z",
+    "updated_at": "2026-06-28T12:50:37.354Z"
+  }
+},
+{
+  "model": "activities.activity",
+  "pk": 2,
+  "fields": {
+    "title": "Water Music Festival",
+    "category": 1,
+    "description": "Piccola escursione con concerto in quota sopra al Passo del Tonale presso il Lago Valbiolo.",
+    "image": "activities/Water-Music-Festival_Ph-Mauro-Mariotti-2022_1301_SnjXogB.webp",
+    "date": "2026-08-02",
+    "start_time": "12:30:00",
+    "end_time": "17:00:00",
+    "meeting_place": "Passo del Tonale",
+    "max_participants": null,
+    "price": null,
+    "what_to_bring": "",
+    "requires_booking": false,
+    "created_by": 3,
+    "created_at": "2026-06-28T12:17:22.019Z",
+    "updated_at": "2026-06-28T12:17:22.019Z"
+  }
+},
+{
+  "model": "activities.activity",
+  "pk": 3,
+  "fields": {
+    "title": "Cena Rimediata/Francese",
+    "category": 4,
+    "description": "",
+    "image": "activities/b1d6146b-a5ac-4540-a4d2-e44ecf09a8d0.jpeg.avif",
+    "date": "2026-08-02",
+    "start_time": "20:00:00",
+    "end_time": "21:30:00",
+    "meeting_place": "Casa",
+    "max_participants": null,
+    "price": null,
+    "what_to_bring": "",
+    "requires_booking": false,
+    "created_by": 3,
+    "created_at": "2026-06-28T12:53:34.879Z",
+    "updated_at": "2026-06-28T12:53:34.879Z"
+  }
+},
+{
+  "model": "activities.activity",
+  "pk": 4,
+  "fields": {
+    "title": "Giro dei 5 laghi",
+    "category": 1,
+    "description": "Partenza da Casa ore 8:15. Arrivo a Madonna di Campiglio presso parcheggio funivia 5 laghi. Biglietto di sola andata per poi fare giro completo dei laghi. Possibilità di varianti per il rientro più o meno impegnative.",
+    "image": "activities/variant.jpg",
+    "date": "2026-08-03",
+    "start_time": "08:15:00",
+    "end_time": "17:30:00",
+    "meeting_place": "Parcheggio funivia 5 laghi, Madonna di Campiglio",
+    "max_participants": null,
+    "price": null,
+    "what_to_bring": "- Scarpe da escursione\r\n- Cappello e crema solare\r\n- K-way\r\n- Riserve abbondanti di acqua \r\n- Pranzo al sacco\r\n\r\nConsigliato vestirsi a strati",
+    "requires_booking": false,
+    "created_by": 3,
+    "created_at": "2026-06-28T13:52:21.762Z",
+    "updated_at": "2026-06-28T13:52:21.762Z"
+  }
+},
+{
+  "model": "activities.activity",
+  "pk": 5,
+  "fields": {
+    "title": "Volley",
+    "category": 3,
+    "description": "Match di volley da 4 vs 4 a 6 vs 6.",
+    "image": "activities/13961e76-52cc-47f3-8b9e-7c19375169aa.jpeg.avif",
+    "date": "2026-08-03",
+    "start_time": "18:30:00",
+    "end_time": "20:00:00",
+    "meeting_place": "Giardino Casa",
+    "max_participants": 12,
+    "price": null,
+    "what_to_bring": "",
+    "requires_booking": true,
+    "created_by": 3,
+    "created_at": "2026-06-28T13:57:18.645Z",
+    "updated_at": "2026-06-28T13:57:34.934Z"
+  }
+},
+{
+  "model": "activities.activity",
+  "pk": 6,
+  "fields": {
+    "title": "Calcetto",
+    "category": 3,
+    "description": "Match calcetto minimo 4 vs 4",
+    "image": "activities/b43495a7-2f6e-4f41-9569-9486978d77f7.jpg.jpeg",
+    "date": "2026-08-03",
+    "start_time": "18:30:00",
+    "end_time": "20:00:00",
+    "meeting_place": "Giardino Casa",
+    "max_participants": 10,
+    "price": null,
+    "what_to_bring": "",
+    "requires_booking": true,
+    "created_by": 3,
+    "created_at": "2026-06-28T14:08:39.745Z",
+    "updated_at": "2026-06-28T14:08:39.745Z"
+  }
+},
+{
+  "model": "activities.activity",
+  "pk": 7,
+  "fields": {
+    "title": "Ferrata Sentiero dei Fiori* (senza Cima Payer)",
+    "category": 1,
+    "description": "*DA CONFERMARE IN BASE A CONDIZIONI PERCORSO\r\n\r\nFerrata di difficoltà Medio-Facile. Non presenta grandi difficoltà tecniche ma è sconsigliata a chi soffre di vertigini. Lascio tutti i materiali da consultare prima di prendere una scelta ai link qua sotto:\r\n\r\nhttps://www.visitvaldisole.it/it/activity/sentierodeifiori__sentierodeifiori__-10237",
+    "image": "activities/sentiero-fiori-valle-camonica.jpg.jpeg",
+    "date": "2026-08-04",
+    "start_time": "08:30:00",
+    "end_time": "17:30:00",
+    "meeting_place": "Passo del Tonale",
+    "max_participants": 28,
+    "price": null,
+    "what_to_bring": "- Kit Ferrata - Scarpe da escursione - Cappello e crema solare - K-way - Riserve abbondanti di acqua - Pranzo al sacco - Consigliato vestirsi a strati",
+    "requires_booking": true,
+    "created_by": 3,
+    "created_at": "2026-06-28T14:29:30.108Z",
+    "updated_at": "2026-06-28T14:31:59.615Z"
+  }
+},
+{
+  "model": "activities.activity",
+  "pk": 8,
+  "fields": {
+    "title": "Cena Squadra 1",
+    "category": 2,
+    "description": "",
+    "image": "activities/b1d6146b-a5ac-4540-a4d2-e44ecf09a8d0_1YmG1WC.jpeg.avif",
+    "date": "2026-08-03",
+    "start_time": "20:30:00",
+    "end_time": "22:00:00",
+    "meeting_place": "Salone",
+    "max_participants": null,
+    "price": null,
+    "what_to_bring": "",
+    "requires_booking": false,
+    "created_by": 3,
+    "created_at": "2026-06-28T16:14:37.534Z",
+    "updated_at": "2026-06-28T16:14:37.534Z"
+  }
+}
+]
