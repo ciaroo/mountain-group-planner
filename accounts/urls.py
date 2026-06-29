@@ -24,4 +24,5 @@ urlpatterns = [
     path("export/participants/", views.export_participants_csv, name="export_participants_csv"),
     path("export/bookings/", views.export_bookings_csv, name="export_bookings_csv"),
     path("export/cars/", views.export_cars_csv, name="export_cars_csv"),
+    path("export/house-data/", views.export_house_data_csv, name="export_house_data_csv"),
 ]

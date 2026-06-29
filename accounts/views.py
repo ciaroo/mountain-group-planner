@@ -572,6 +572,94 @@ def export_participants_csv(request):
 
 
 @login_required
+def export_house_data_csv(request):
+    if not request.user.is_staff:
+        messages.error(request, "Non hai il permesso per esportare i dati per la casa.")
+        return redirect("accounts:home")
+
+    response = HttpResponse(content_type="text/csv; charset=utf-8")
+    response["Content-Disposition"] = 'attachment; filename="dati_casa.csv"'
+
+    response.write("\ufeff")
+
+    writer = csv.writer(response)
+
+    writer.writerow([
+        "Nome",
+        "Cognome",
+        "Email",
+        "Data di nascita",
+        "Luogo di nascita",
+        "Comune / luogo di residenza",
+        "Via / indirizzo di residenza",
+        "Sesso",
+        "Tipo documento",
+        "Numero documento",
+        "Ente rilascio documento",
+        "Noleggio biancheria",
+    ])
+
+    participants = User.objects.filter(
+        is_superuser=False
+    ).select_related(
+        "profile"
+    ).order_by(
+        "first_name",
+        "last_name",
+        "username"
+    )
+
+    for participant in participants:
+        profile_obj = getattr(participant, "profile", None)
+
+        if profile_obj:
+            if profile_obj.birth_date:
+                birth_date = profile_obj.birth_date.strftime("%d/%m/%Y")
+            else:
+                birth_date = ""
+
+            birth_place = profile_obj.birth_place
+            residence_place = profile_obj.residence_place
+            residence_address = profile_obj.residence_address
+            sex = profile_obj.get_sex_display()
+            document_type = profile_obj.get_document_type_display()
+            document_number = profile_obj.document_number
+            document_issuing_authority = profile_obj.document_issuing_authority
+
+            if profile_obj.wants_linen_rental:
+                wants_linen_rental = "Sì"
+            else:
+                wants_linen_rental = "No"
+        else:
+            birth_date = ""
+            birth_place = ""
+            residence_place = ""
+            residence_address = ""
+            sex = ""
+            document_type = ""
+            document_number = ""
+            document_issuing_authority = ""
+            wants_linen_rental = "No"
+
+        writer.writerow([
+            participant.first_name,
+            participant.last_name,
+            participant.email,
+            birth_date,
+            birth_place,
+            residence_place,
+            residence_address,
+            sex,
+            document_type,
+            document_number,
+            document_issuing_authority,
+            wants_linen_rental,
+        ])
+
+    return response
+
+
+@login_required
 def export_bookings_csv(request):
     if not request.user.is_staff:
         messages.error(request, "Non hai il permesso per esportare le prenotazioni.")
