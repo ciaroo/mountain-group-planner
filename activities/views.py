@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
@@ -8,7 +10,27 @@ from .forms import ActivityForm, NoticeForm
 from .models import Activity, Booking, Category, Notice
 
 
+def registration_only_redirect(request):
+    registration_only_mode = getattr(settings, "REGISTRATION_ONLY_MODE", False)
+
+    if not registration_only_mode:
+        return None
+
+    if request.user.is_authenticated and request.user.is_staff:
+        return None
+
+    if request.user.is_authenticated:
+        return redirect("accounts:registration_complete")
+
+    return redirect("accounts:register")
+
+
 def activity_list(request):
+    restricted_redirect = registration_only_redirect(request)
+
+    if restricted_redirect:
+        return restricted_redirect
+
     activities = Activity.objects.filter(
         requires_booking=True
     ).order_by(
@@ -42,6 +64,11 @@ def activity_list(request):
 
 
 def activity_detail(request, pk):
+    restricted_redirect = registration_only_redirect(request)
+
+    if restricted_redirect:
+        return restricted_redirect
+
     activity = get_object_or_404(Activity, pk=pk)
 
     user_booking = None
@@ -67,6 +94,11 @@ def activity_detail(request, pk):
 
 @login_required
 def book_activity(request, pk):
+    restricted_redirect = registration_only_redirect(request)
+
+    if restricted_redirect:
+        return restricted_redirect
+
     with transaction.atomic():
         activity = get_object_or_404(
             Activity.objects.select_for_update(),
@@ -141,6 +173,11 @@ def book_activity(request, pk):
 
 @login_required
 def cancel_booking(request, pk):
+    restricted_redirect = registration_only_redirect(request)
+
+    if restricted_redirect:
+        return restricted_redirect
+
     activity = get_object_or_404(Activity, pk=pk)
 
     booking = Booking.objects.filter(
@@ -159,6 +196,11 @@ def cancel_booking(request, pk):
 
 @login_required
 def my_bookings(request):
+    restricted_redirect = registration_only_redirect(request)
+
+    if restricted_redirect:
+        return restricted_redirect
+
     bookings = Booking.objects.filter(
         user=request.user
     ).select_related("activity").order_by(
@@ -247,6 +289,11 @@ def delete_activity(request, pk):
 
 
 def activity_calendar(request):
+    restricted_redirect = registration_only_redirect(request)
+
+    if restricted_redirect:
+        return restricted_redirect
+
     activities = Activity.objects.all().order_by(
         "date",
         "start_time"
@@ -268,6 +315,11 @@ def activity_calendar(request):
 
 
 def today_program(request):
+    restricted_redirect = registration_only_redirect(request)
+
+    if restricted_redirect:
+        return restricted_redirect
+
     first_activity = Activity.objects.all().order_by(
         "date",
         "start_time"
@@ -293,6 +345,11 @@ def today_program(request):
 
 
 def notice_list(request):
+    restricted_redirect = registration_only_redirect(request)
+
+    if restricted_redirect:
+        return restricted_redirect
+
     if request.user.is_authenticated and request.user.is_staff:
         notices = Notice.objects.all()
     else:

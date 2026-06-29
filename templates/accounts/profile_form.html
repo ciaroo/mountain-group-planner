@@ -1,67 +1,329 @@
 {% extends "base.html" %}
 
-{% block title %}Modifica profilo{% endblock %}
+{% block title %}Completa profilo{% endblock %}
 
 {% block content %}
-    <div class="mb-4">
-        <h2 class="mb-1">Modifica profilo</h2>
-        <p class="text-muted mb-0">
-            Aggiorna le informazioni utili per l'organizzazione della vacanza.
-        </p>
+    <div class="page-header mb-4">
+        <div>
+            <div class="section-label">
+                Profilo
+            </div>
+
+            <h1 class="mb-2">
+                Completa profilo
+            </h1>
+
+            <p class="text-muted mb-0">
+                Inserisci le informazioni necessarie per l'organizzazione della vacanza e per la registrazione presso l'alloggio.
+            </p>
+        </div>
+
+        <div>
+            <a href="{% url 'accounts:profile' %}" class="btn btn-outline-secondary">
+                Torna al profilo
+            </a>
+        </div>
     </div>
 
-    <div class="card shadow-sm">
+    <div class="clean-card">
         <div class="card-body">
             <form method="post">
                 {% csrf_token %}
 
-                <div class="mb-3">
-                    <label class="form-label">Nome visualizzato</label>
-                    {{ form.display_name }}
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Allergie</label>
-                    {{ form.allergies }}
-                    <div class="form-text">
-                        Esempio: frutta secca, lattosio, glutine...
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
                     </div>
-                </div>
+                {% endif %}
 
-                <div class="mb-3">
-                    <label class="form-label">Preferenze alimentari</label>
-                    {{ form.food_preferences }}
-                    <div class="form-text">
-                        Esempio: vegetariano, vegano, no pesce...
+                <section class="mb-4">
+                    <div class="section-label">
+                        Informazioni personali
                     </div>
-                </div>
 
-                <div class="form-check mb-3">
-                    {{ form.has_car }}
-                    <label class="form-check-label">
-                        Auto disponibile
-                    </label>
-                </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.display_name.id_for_label }}">
+                            Nome visualizzato
+                        </label>
+                        {{ form.display_name }}
 
-                <div class="mb-3">
-                    <label class="form-label">Modello auto</label>
-                    {{ form.car_model }}
-                    <div class="form-text">
-                        Esempio: Fiat Panda, Toyota Yaris, Volkswagen Golf...
+                        {% if form.display_name.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.display_name.errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="form-text">
+                            Nome che verrà mostrato nel sito.
+                        </div>
                     </div>
-                </div>
+                </section>
 
-                <div class="mb-3">
-                    <label class="form-label">Posti auto disponibili</label>
-                    {{ form.car_seats }}
-                </div>
+                <hr class="my-4">
 
-                <div class="mb-3">
-                    <label class="form-label">Note personali</label>
-                    {{ form.notes }}
-                </div>
+                <section class="mb-4">
+                    <div class="section-label">
+                        Dati per registrazione alloggio
+                    </div>
 
-                <div class="d-flex gap-2">
+                    <p class="text-muted small mb-3">
+                        Questi dati servono agli organizzatori per preparare le informazioni da comunicare alla proprietaria della casa.
+                    </p>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="{{ form.birth_date.id_for_label }}">
+                                Data di nascita
+                            </label>
+                            {{ form.birth_date }}
+
+                            {% if form.birth_date.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.birth_date.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="{{ form.birth_place.id_for_label }}">
+                                Luogo di nascita
+                            </label>
+                            {{ form.birth_place }}
+
+                            {% if form.birth_place.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.birth_place.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.residence_place.id_for_label }}">
+                            Luogo di residenza
+                        </label>
+                        {{ form.residence_place }}
+
+                        {% if form.residence_place.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.residence_place.errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="form-text">
+                            Inserisci comune e provincia di residenza.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.residence_address.id_for_label }}">
+                            Via / indirizzo di residenza
+                        </label>
+                        {{ form.residence_address }}
+
+                        {% if form.residence_address.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.residence_address.errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="form-text">
+                            Inserisci via, numero civico.
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label" for="{{ form.sex.id_for_label }}">
+                                Sesso
+                            </label>
+                            {{ form.sex }}
+
+                            {% if form.sex.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.sex.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label" for="{{ form.document_type.id_for_label }}">
+                                Tipo di documento
+                            </label>
+                            {{ form.document_type }}
+
+                            {% if form.document_type.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.document_type.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label" for="{{ form.document_number.id_for_label }}">
+                                Numero documento
+                            </label>
+                            {{ form.document_number }}
+
+                            {% if form.document_number.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.document_number.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label" for="{{ form.document_issuing_authority.id_for_label }}">
+                                Ente rilascio documento
+                            </label>
+                            {{ form.document_issuing_authority }}
+
+                            {% if form.document_issuing_authority.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.document_issuing_authority.errors }}
+                                </div>
+                            {% endif %}
+
+                            <div class="form-text">
+                                Esempio: Comune di Firenze, Motorizzazione Civile di Roma.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <hr class="my-4">
+
+                <section class="mb-4">
+                    <div class="section-label">
+                        Biancheria
+                    </div>
+
+                    <div class="form-check">
+                        {{ form.wants_linen_rental }}
+
+                        <label class="form-check-label" for="{{ form.wants_linen_rental.id_for_label }}">
+                            {{ form.wants_linen_rental.label }}
+                        </label>
+
+                        {% if form.wants_linen_rental.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.wants_linen_rental.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-text">
+                        Seleziona questa opzione se vuoi noleggiare la biancheria al costo di 15€.
+                    </div>
+                </section>
+
+                <hr class="my-4">
+
+                <section class="mb-4">
+                    <div class="section-label">
+                        Allergie e preferenze
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.allergies.id_for_label }}">
+                            Allergie
+                        </label>
+                        {{ form.allergies }}
+
+                        {% if form.allergies.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.allergies.errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="form-text">
+                            Esempio: frutta secca, lattosio, glutine. Lascia vuoto se non hai allergie.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.food_preferences.id_for_label }}">
+                            Preferenze alimentari
+                        </label>
+                        {{ form.food_preferences }}
+
+                        {% if form.food_preferences.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.food_preferences.errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="form-text">
+                            Esempio: vegetariano, vegano, no pesce. Lascia vuoto se non hai preferenze.
+                        </div>
+                    </div>
+                </section>
+
+                <hr class="my-4">
+
+                <section class="mb-4">
+                    <div class="section-label">
+                        Auto
+                    </div>
+
+                    <div class="form-check mb-3">
+                        {{ form.has_car }}
+
+                        <label class="form-check-label" for="{{ form.has_car.id_for_label }}">
+                            Auto disponibile
+                        </label>
+
+                        {% if form.has_car.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.has_car.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.car_seats.id_for_label }}">
+                            Posti auto disponibili
+                        </label>
+                        {{ form.car_seats }}
+
+                        {% if form.car_seats.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.car_seats.errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="form-text">
+                            Inserisci 0 se non hai posti disponibili o se non hai auto.
+                        </div>
+                    </div>
+                </section>
+
+                <hr class="my-4">
+
+                <section class="mb-4">
+                    <div class="section-label">
+                        Note
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.notes.id_for_label }}">
+                            Note personali
+                        </label>
+                        {{ form.notes }}
+
+                        {% if form.notes.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.notes.errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="form-text">
+                            Aggiungi eventuali informazioni utili per gli organizzatori.
+                        </div>
+                    </div>
+                </section>
+
+                <div class="d-flex gap-2 flex-wrap">
                     <button type="submit" class="btn btn-success">
                         Salva profilo
                     </button>

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Dati inviati{% endblock %}
+
+{% block content %}
+    <section class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="clean-card text-center">
+                <div class="card-body py-5">
+                    <div class="section-label mb-3">
+                        Registrazione completata
+                    </div>
+
+                    {% if profile_is_complete %}
+                        <h1 class="mb-3">
+                            Dati inviati correttamente
+                        </h1>
+
+                        <p class="text-muted mb-4">
+                            Grazie, abbiamo ricevuto i tuoi dati per la registrazione all'alloggio e per l'organizzazione della vacanza.
+                            Gli organizzatori ti avviseranno quando il sito completo sarà disponibile.
+                        </p>
+
+                        <div class="alert alert-success text-start">
+                            <strong>Riepilogo:</strong>
+                            il tuo profilo risulta compilato correttamente.
+                        </div>
+                    {% else %}
+                        <h1 class="mb-3">
+                            Profilo da completare
+                        </h1>
+
+                        <p class="text-muted mb-4">
+                            Mancano ancora alcuni dati necessari per la registrazione all'alloggio.
+                        </p>
+
+                        <div class="alert alert-warning text-start">
+                            Completa il profilo prima di chiudere la pagina.
+                        </div>
+                    {% endif %}
+
+                    <div class="d-flex gap-2 justify-content-center flex-wrap">
+                        <a href="{% url 'accounts:edit_profile' %}" class="btn btn-success">
+                            Modifica i miei dati
+                        </a>
+
+                        <a href="{% url 'logout' %}" class="btn btn-outline-secondary">
+                            Esci
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

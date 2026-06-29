@@ -3,28 +3,50 @@
 {% block title %}Profilo utente{% endblock %}
 
 {% block content %}
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <section class="page-header mb-4">
         <div>
-            <h2 class="mb-1">Profilo utente</h2>
+            <p class="section-label mb-2">
+                Profilo
+            </p>
+
+            <h1 class="mb-2">
+                Profilo utente
+            </h1>
+
             <p class="text-muted mb-0">
-                Informazioni principali dell'account e preferenze personali.
+                Riepilogo delle informazioni personali, dei dati per l'alloggio e delle preferenze utili agli organizzatori.
             </p>
         </div>
 
         <a href="{% url 'accounts:edit_profile' %}" class="btn btn-success">
             Modifica profilo
         </a>
-    </div>
+    </section>
 
-    <div class="row">
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm h-100">
+    <section class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card clean-card h-100">
                 <div class="card-body">
-                    <h3 class="h5 mb-3">Account</h3>
+                    <div class="section-label">
+                        Account
+                    </div>
+
+                    <h2 class="h5 mb-3">
+                        Dati account
+                    </h2>
 
                     <p>
                         <strong>Username:</strong>
                         {{ user.username }}
+                    </p>
+
+                    <p>
+                        <strong>Nome:</strong>
+                        {% if user.first_name or user.last_name %}
+                            {{ user.first_name }} {{ user.last_name }}
+                        {% else %}
+                            <span class="text-muted">Non inserito</span>
+                        {% endif %}
                     </p>
 
                     <p>
@@ -53,10 +75,16 @@
             </div>
         </div>
 
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm h-100">
+        <div class="col-lg-6">
+            <div class="card clean-card h-100">
                 <div class="card-body">
-                    <h3 class="h5 mb-3">Informazioni personali</h3>
+                    <div class="section-label">
+                        Informazioni personali
+                    </div>
+
+                    <h2 class="h5 mb-3">
+                        Dati personali
+                    </h2>
 
                     <p>
                         <strong>Nome visualizzato:</strong>
@@ -68,6 +96,121 @@
                     </p>
 
                     <p>
+                        <strong>Data di nascita:</strong>
+                        {% if profile.birth_date %}
+                            {{ profile.birth_date|date:"d/m/Y" }}
+                        {% else %}
+                            <span class="text-muted">Non inserita</span>
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Luogo di nascita:</strong>
+                        {% if profile.birth_place %}
+                            {{ profile.birth_place }}
+                        {% else %}
+                            <span class="text-muted">Non inserito</span>
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Luogo di residenza:</strong>
+                        {% if profile.residence_place %}
+                            {{ profile.residence_place }}
+                        {% else %}
+                            <span class="text-muted">Non inserito</span>
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Via / indirizzo di residenza:</strong>
+                        {% if profile.residence_address %}
+                            {{ profile.residence_address }}
+                        {% else %}
+                            <span class="text-muted">Non inserito</span>
+                        {% endif %}
+                    </p>
+
+                    <p class="mb-0">
+                        <strong>Sesso:</strong>
+                        {% if profile.sex %}
+                            {{ profile.get_sex_display }}
+                        {% else %}
+                            <span class="text-muted">Non inserito</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card clean-card h-100">
+                <div class="card-body">
+                    <div class="section-label">
+                        Alloggio
+                    </div>
+
+                    <h2 class="h5 mb-3">
+                        Documento e biancheria
+                    </h2>
+
+                    <p>
+                        <strong>Tipo documento:</strong>
+                        {% if profile.document_type %}
+                            {{ profile.get_document_type_display }}
+                        {% else %}
+                            <span class="text-muted">Non inserito</span>
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Numero documento:</strong>
+                        {% if profile.document_number %}
+                            {{ profile.document_number }}
+                        {% else %}
+                            <span class="text-muted">Non inserito</span>
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Ente rilascio documento:</strong>
+                        {% if profile.document_issuing_authority %}
+                            {{ profile.document_issuing_authority }}
+                        {% else %}
+                            <span class="text-muted">Non inserito</span>
+                        {% endif %}
+                    </p>
+
+                    <p class="mb-0">
+                        <strong>Noleggio biancheria:</strong>
+                        {% if profile.wants_linen_rental %}
+                            <span class="badge text-bg-warning">
+                                Sì · 15€
+                            </span>
+                        {% else %}
+                            <span class="badge text-bg-light text-dark border">
+                                No
+                            </span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card clean-card h-100">
+                <div class="card-body">
+                    <div class="section-label">
+                        Auto
+                    </div>
+
+                    <h2 class="h5 mb-3">
+                        Disponibilità auto
+                    </h2>
+
+                    <p>
                         <strong>Auto disponibile:</strong>
                         {% if profile.has_car %}
                             <span class="badge text-bg-success">Sì</span>
@@ -76,27 +219,24 @@
                         {% endif %}
                     </p>
 
-                    <p>
-                        <strong>Modello auto:</strong>
-                        {% if profile.car_model %}
-                            {{ profile.car_model }}
-                        {% else %}
-                            <span class="text-muted">Non inserito</span>
-                        {% endif %}
-                    </p>
-
-                    <p>
+                    <p class="mb-0">
                         <strong>Posti auto disponibili:</strong>
                         {{ profile.car_seats }}
                     </p>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div class="card shadow-sm mb-4">
+    <section class="card clean-card mb-4">
         <div class="card-body">
-            <h3 class="h5 mb-3">Allergie e preferenze</h3>
+            <div class="section-label">
+                Cibo
+            </div>
+
+            <h2 class="h5 mb-3">
+                Allergie e preferenze
+            </h2>
 
             <p>
                 <strong>Allergie:</strong>
@@ -116,17 +256,25 @@
                 {% endif %}
             </p>
         </div>
-    </div>
+    </section>
 
-    <div class="card shadow-sm">
+    <section class="card clean-card">
         <div class="card-body">
-            <h3 class="h5 mb-3">Note personali</h3>
+            <div class="section-label">
+                Note
+            </div>
+
+            <h2 class="h5 mb-3">
+                Note personali
+            </h2>
 
             {% if profile.notes %}
                 <p class="mb-0">{{ profile.notes }}</p>
             {% else %}
-                <p class="text-muted mb-0">Nessuna nota inserita.</p>
+                <p class="text-muted mb-0">
+                    Nessuna nota inserita.
+                </p>
             {% endif %}
         </div>
-    </div>
+    </section>
 {% endblock %}

@@ -1,5 +1,6 @@
 import csv
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -14,6 +15,42 @@ from activities.models import Activity, Booking, Notice
 from .forms import ProfileForm, RegistrationForm
 from .models import Profile
 
+def is_registration_only_mode_active():
+    return getattr(settings, "REGISTRATION_ONLY_MODE", False)
+
+
+def is_profile_complete(profile_obj):
+    return bool(
+        profile_obj.display_name
+        and profile_obj.birth_date
+        and profile_obj.birth_place
+        and profile_obj.residence_place
+        and profile_obj.residence_address
+        and profile_obj.sex
+        and profile_obj.document_type
+        and profile_obj.document_number
+        and profile_obj.document_issuing_authority
+    )
+
+
+def registration_only_redirect(request):
+    if not is_registration_only_mode_active():
+        return None
+
+    if not request.user.is_authenticated:
+        return redirect("accounts:register")
+
+    if request.user.is_staff:
+        return None
+
+    profile_obj, created = Profile.objects.get_or_create(
+        user=request.user
+    )
+
+    if not is_profile_complete(profile_obj):
+        return redirect("accounts:edit_profile")
+
+    return redirect("accounts:registration_complete")
 
 def register(request):
     if request.user.is_authenticated:
@@ -25,13 +62,6 @@ def register(request):
         if form.is_valid():
             user = form.save()
 
-            profile_obj, created = Profile.objects.get_or_create(
-                user=user
-            )
-
-            profile_obj.display_name = f"{user.first_name} {user.last_name}".strip()
-            profile_obj.save()
-
             login(request, user)
 
             messages.success(
@@ -39,7 +69,7 @@ def register(request):
                 "Registrazione completata. Benvenuto nel sito della vacanza!"
             )
 
-            return redirect("accounts:home")
+            return redirect("accounts:edit_profile")
     else:
         form = RegistrationForm()
 
@@ -51,6 +81,11 @@ def register(request):
 
 
 def home(request):
+    restricted_redirect = registration_only_redirect(request)
+
+    if restricted_redirect:
+        return restricted_redirect
+
     today = timezone.localdate()
 
     latest_notice = Notice.objects.filter(
@@ -154,6 +189,10 @@ def home(request):
 
 @login_required
 def dashboard(request):
+    restricted_redirect = registration_only_redirect(request)
+
+    if restricted_redirect:
+        return restricted_redirect
     user_bookings = Booking.objects.filter(
         user=request.user
     ).select_related("activity").order_by(
@@ -205,6 +244,10 @@ def edit_profile(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Profilo aggiornato correttamente.")
+
+            if is_registration_only_mode_active() and not request.user.is_staff:
+                return redirect("accounts:registration_complete")
+
             return redirect("accounts:profile")
     else:
         form = ProfileForm(instance=profile_obj)
@@ -215,6 +258,18 @@ def edit_profile(request):
 
     return render(request, "accounts/profile_form.html", context)
 
+@login_required
+def registration_complete(request):
+    profile_obj, created = Profile.objects.get_or_create(
+        user=request.user
+    )
+
+    context = {
+        "profile": profile_obj,
+        "profile_is_complete": is_profile_complete(profile_obj),
+    }
+
+    return render(request, "accounts/registration_complete.html", context)
 
 @login_required
 def cars_organization(request):
@@ -270,13 +325,26 @@ def participant_list(request):
     completed_profiles = 0
     participants_with_car = 0
     total_car_seats = 0
+    linen_rentals = 0
+    organizers_count = 0
 
     for participant in participants:
         profile_obj = getattr(participant, "profile", None)
 
+        if participant.is_staff:
+            organizers_count += 1
+
         if profile_obj:
             if (
                 profile_obj.display_name
+                or profile_obj.birth_date
+                or profile_obj.birth_place
+                or profile_obj.residence_place
+                or profile_obj.residence_address
+                or profile_obj.sex
+                or profile_obj.document_type
+                or profile_obj.document_number
+                or profile_obj.document_issuing_authority
                 or profile_obj.allergies
                 or profile_obj.food_preferences
                 or profile_obj.has_car
@@ -288,16 +356,23 @@ def participant_list(request):
                 participants_with_car += 1
                 total_car_seats += profile_obj.car_seats
 
+            if profile_obj.wants_linen_rental:
+                linen_rentals += 1
+
+    total_linen_cost = linen_rentals * 15
+
     context = {
         "participants": participants,
         "total_participants": total_participants,
         "completed_profiles": completed_profiles,
         "participants_with_car": participants_with_car,
         "total_car_seats": total_car_seats,
+        "linen_rentals": linen_rentals,
+        "total_linen_cost": total_linen_cost,
+        "organizers_count": organizers_count,
     }
 
     return render(request, "accounts/participant_list.html", context)
-
 
 @login_required
 def food_summary(request):
@@ -391,12 +466,21 @@ def export_participants_csv(request):
         "Cognome",
         "Email",
         "Nome visualizzato",
+        "Data di nascita",
+        "Luogo di nascita",
+        "Luogo di residenza",
+        "Sesso",
+        "Tipo documento",
+        "Numero documento",
+        "Noleggio biancheria",
+        "Costo biancheria",
         "Allergie",
         "Preferenze alimentari",
         "Auto disponibile",
         "Posti auto",
         "Note",
         "Numero prenotazioni",
+        "Ruolo",
     ])
 
     participants = User.objects.filter(
@@ -416,6 +500,25 @@ def export_participants_csv(request):
 
         if profile_obj:
             display_name = profile_obj.display_name
+
+            if profile_obj.birth_date:
+                birth_date = profile_obj.birth_date.strftime("%d/%m/%Y")
+            else:
+                birth_date = ""
+
+            birth_place = profile_obj.birth_place
+            residence_place = profile_obj.residence_place
+            sex = profile_obj.get_sex_display()
+            document_type = profile_obj.get_document_type_display()
+            document_number = profile_obj.document_number
+
+            if profile_obj.wants_linen_rental:
+                wants_linen_rental = "Sì"
+                linen_cost = "15"
+            else:
+                wants_linen_rental = "No"
+                linen_cost = "0"
+
             allergies = profile_obj.allergies
             food_preferences = profile_obj.food_preferences
             has_car = "Sì" if profile_obj.has_car else "No"
@@ -423,11 +526,24 @@ def export_participants_csv(request):
             notes = profile_obj.notes
         else:
             display_name = ""
+            birth_date = ""
+            birth_place = ""
+            residence_place = ""
+            sex = ""
+            document_type = ""
+            document_number = ""
+            wants_linen_rental = "No"
+            linen_cost = "0"
             allergies = ""
             food_preferences = ""
             has_car = "No"
             car_seats = 0
             notes = ""
+
+        if participant.is_staff:
+            role = "Organizzatore"
+        else:
+            role = "Partecipante"
 
         writer.writerow([
             participant.username,
@@ -435,12 +551,21 @@ def export_participants_csv(request):
             participant.last_name,
             participant.email,
             display_name,
+            birth_date,
+            birth_place,
+            residence_place,
+            sex,
+            document_type,
+            document_number,
+            wants_linen_rental,
+            linen_cost,
             allergies,
             food_preferences,
             has_car,
             car_seats,
             notes,
             participant.total_bookings,
+            role,
         ])
 
     return response
@@ -538,7 +663,6 @@ def export_cars_csv(request):
         "Partecipante",
         "Username",
         "Email",
-        "Modello auto",
         "Posti disponibili",
         "Note",
     ])
@@ -564,13 +688,10 @@ def export_cars_csv(request):
         else:
             participant_name = user.username
 
-        car_model = getattr(profile, "car_model", "")
-
         writer.writerow([
             participant_name,
             user.username,
             user.email,
-            car_model,
             profile.car_seats,
             profile.notes,
         ])

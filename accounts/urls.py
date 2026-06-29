@@ -9,6 +9,11 @@ app_name = "accounts"
 urlpatterns = [
     path("", views.home, name="home"),
     path("register/", views.register, name="register"),
+    path(
+        "registration-complete/",
+        views.registration_complete,
+        name="registration_complete"
+    ),
     path("dashboard/", views.dashboard, name="dashboard"),
     path("profile/", views.profile, name="profile"),
     path("profile/edit/", views.edit_profile, name="edit_profile"),

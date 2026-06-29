@@ -61,6 +61,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "accounts.context_processors.registration_only_mode",
             ],
         },
     },
@@ -153,3 +154,5 @@ REGISTRATION_INVITE_CODE = os.environ.get(
     "REGISTRATION_INVITE_CODE",
     "MONTAGNA4.7"
 )
+
+REGISTRATION_ONLY_MODE = os.environ.get("REGISTRATION_ONLY_MODE", "False") == "True"

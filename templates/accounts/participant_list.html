@@ -3,49 +3,59 @@
 {% block title %}Lista partecipanti{% endblock %}
 
 {% block content %}
-    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+    <section class="page-header mb-4">
         <div>
-            <div class="section-label">
+            <p class="section-label mb-2">
                 Organizzazione
-            </div>
+            </p>
 
-            <h1 class="page-title mb-2">
+            <h1 class="mb-2">
                 Lista partecipanti
             </h1>
 
             <p class="text-muted mb-0">
-                Riepilogo degli utenti registrati, profili, auto e prenotazioni.
+                Riepilogo dei partecipanti, dati per l'alloggio, biancheria, auto e prenotazioni.
             </p>
         </div>
-    </div>
 
-    <div class="row g-3 mb-4">
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'accounts:export_participants_csv' %}" class="btn btn-success">
+                Esporta CSV
+            </a>
+
+            <a href="{% url 'accounts:home' %}" class="btn btn-outline-secondary">
+                Torna alla home
+            </a>
+        </div>
+    </section>
+
+    <section class="row g-3 mb-4">
         <div class="col-md-3">
-            <div class="clean-card h-100">
+            <div class="card clean-card h-100">
                 <div class="card-body">
                     <div class="section-label">
                         Totale
                     </div>
 
-                    <h2 class="home-card-title mb-0">
+                    <h2 class="h3 mb-0">
                         {{ total_participants }}
                     </h2>
 
                     <p class="text-muted mb-0">
-                        partecipanti
+                        partecipanti registrati
                     </p>
                 </div>
             </div>
         </div>
 
         <div class="col-md-3">
-            <div class="clean-card h-100">
+            <div class="card clean-card h-100">
                 <div class="card-body">
                     <div class="section-label">
                         Profili
                     </div>
 
-                    <h2 class="home-card-title mb-0">
+                    <h2 class="h3 mb-0">
                         {{ completed_profiles }}
                     </h2>
 
@@ -57,53 +67,54 @@
         </div>
 
         <div class="col-md-3">
-            <div class="clean-card h-100">
+            <div class="card clean-card h-100">
                 <div class="card-body">
                     <div class="section-label">
-                        Auto
+                        Biancheria
                     </div>
 
-                    <h2 class="home-card-title mb-0">
-                        {{ participants_with_car }}
+                    <h2 class="h3 mb-0">
+                        {{ linen_rentals }}
                     </h2>
 
                     <p class="text-muted mb-0">
-                        persone con auto
+                        richieste · {{ total_linen_cost }}€
                     </p>
                 </div>
             </div>
         </div>
 
         <div class="col-md-3">
-            <div class="clean-card h-100">
+            <div class="card clean-card h-100">
                 <div class="card-body">
                     <div class="section-label">
-                        Posti
+                        Auto
                     </div>
 
-                    <h2 class="home-card-title mb-0">
-                        {{ total_car_seats }}
+                    <h2 class="h3 mb-0">
+                        {{ participants_with_car }}
                     </h2>
 
                     <p class="text-muted mb-0">
-                        posti auto dichiarati
+                        auto · {{ total_car_seats }} posti
                     </p>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div class="clean-card">
-        <div class="card-body">
-            {% if participants %}
+    {% if participants %}
+        <section class="card clean-card">
+            <div class="card-body">
                 <div class="table-responsive">
                     <table class="table align-middle">
                         <thead>
                             <tr>
                                 <th>Partecipante</th>
-                                <th>Email</th>
-                                <th>Allergie</th>
-                                <th>Preferenze</th>
+                                <th>Dati alloggio</th>
+                                <th>Documento</th>
+                                <th>Biancheria</th>
+                                <th>Allergie / preferenze</th>
                                 <th>Auto</th>
                                 <th>Prenotazioni</th>
                             </tr>
@@ -122,59 +133,189 @@
                                         </strong>
 
                                         <div class="text-muted small">
-                                            @{{ participant.username }}
+                                            {{ participant.email }}
+                                        </div>
+
+                                        <div class="mt-1">
+                                            {% if participant.is_staff %}
+                                                <span class="badge text-bg-success">
+                                                    Organizzatore
+                                                </span>
+                                            {% else %}
+                                                <span class="badge text-bg-secondary">
+                                                    Partecipante
+                                                </span>
+                                            {% endif %}
                                         </div>
                                     </td>
 
                                     <td>
-                                        {% if participant.email %}
-                                            {{ participant.email }}
+                                        {% if participant.profile %}
+                                            <div class="small">
+                                                <strong>Nascita:</strong>
+                                                {% if participant.profile.birth_date %}
+                                                    {{ participant.profile.birth_date|date:"d/m/Y" }}
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="small">
+                                                <strong>Luogo:</strong>
+                                                {% if participant.profile.birth_place %}
+                                                    {{ participant.profile.birth_place }}
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="small">
+                                                <strong>Residenza:</strong>
+                                                {% if participant.profile.residence_place %}
+                                                    {{ participant.profile.residence_place }}
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="small">
+                                                <strong>Via:</strong>
+                                                {% if participant.profile.residence_address %}
+                                                    {{ participant.profile.residence_address }}
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="small">
+                                                <strong>Sesso:</strong>
+                                                {% if participant.profile.sex %}
+                                                    {{ participant.profile.get_sex_display }}
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+                                            </div>
                                         {% else %}
-                                            <span class="text-muted">Non indicata</span>
+                                            <span class="text-muted small">
+                                                Profilo mancante
+                                            </span>
                                         {% endif %}
                                     </td>
 
                                     <td>
-                                        {% if participant.profile.allergies %}
-                                            {{ participant.profile.allergies|truncatechars:60 }}
+                                        {% if participant.profile %}
+                                            <div class="small">
+                                                <strong>Tipo:</strong>
+                                                {% if participant.profile.document_type %}
+                                                    {{ participant.profile.get_document_type_display }}
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="small">
+                                                <strong>Numero:</strong>
+                                                {% if participant.profile.document_number %}
+                                                    {{ participant.profile.document_number }}
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="small">
+                                                <strong>Rilasciato da:</strong>
+                                                {% if participant.profile.document_issuing_authority %}
+                                                    {{ participant.profile.document_issuing_authority }}
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+                                            </div>
                                         {% else %}
-                                            <span class="text-muted">Nessuna</span>
+                                            <span class="text-muted small">
+                                                -
+                                            </span>
                                         {% endif %}
                                     </td>
 
                                     <td>
-                                        {% if participant.profile.food_preferences %}
-                                            {{ participant.profile.food_preferences|truncatechars:60 }}
-                                        {% else %}
-                                            <span class="text-muted">Nessuna</span>
-                                        {% endif %}
-                                    </td>
-
-                                    <td>
-                                        {% if participant.profile.has_car %}
-                                            <span class="badge text-bg-success">
-                                                Sì · {{ participant.profile.car_seats }} posti
+                                        {% if participant.profile and participant.profile.wants_linen_rental %}
+                                            <span class="badge text-bg-warning">
+                                                Sì · 15€
                                             </span>
                                         {% else %}
-                                            <span class="badge text-bg-secondary">
+                                            <span class="badge text-bg-light text-dark border">
                                                 No
                                             </span>
                                         {% endif %}
                                     </td>
 
                                     <td>
-                                        {{ participant.total_bookings }}
+                                        {% if participant.profile %}
+                                            <div class="small mb-1">
+                                                <strong>Allergie:</strong>
+                                                {% if participant.profile.allergies %}
+                                                    {{ participant.profile.allergies|truncatechars:55 }}
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="small">
+                                                <strong>Preferenze:</strong>
+                                                {% if participant.profile.food_preferences %}
+                                                    {{ participant.profile.food_preferences|truncatechars:55 }}
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+                                            </div>
+                                        {% else %}
+                                            <span class="text-muted small">
+                                                -
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {% if participant.profile and participant.profile.has_car %}
+                                            <span class="badge text-bg-success">
+                                                Sì
+                                            </span>
+
+                                            <div class="text-muted small mt-1">
+                                                {{ participant.profile.car_seats }} posti
+                                            </div>
+                                        {% else %}
+                                            <span class="badge text-bg-light text-dark border">
+                                                No
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        <span class="badge text-bg-secondary">
+                                            {{ participant.total_bookings }}
+                                        </span>
                                     </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
-            {% else %}
-                <p class="text-muted mb-0">
-                    Non ci sono ancora partecipanti registrati.
+
+                <p class="text-muted small mt-3 mb-0">
+                    I dati presenti in questa pagina sono visibili solo agli organizzatori.
                 </p>
-            {% endif %}
-        </div>
-    </div>
+            </div>
+        </section>
+    {% else %}
+        <section class="empty-state">
+            <h2 class="h4">
+                Nessun partecipante
+            </h2>
+
+            <p class="text-muted mb-0">
+                Non ci sono ancora utenti registrati.
+            </p>
+        </section>
+    {% endif %}
 {% endblock %}
