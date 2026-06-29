@@ -15,9 +15,8 @@ class ActivityForm(forms.ModelForm):
             "start_time",
             "end_time",
             "meeting_place",
-            "latitude",
-            "longitude",
             "max_participants",
+            "price",
             "what_to_bring",
             "requires_booking",
         ]
@@ -31,12 +30,40 @@ class ActivityForm(forms.ModelForm):
             "start_time": forms.TimeInput(attrs={"class": "form-control", "type": "time"}),
             "end_time": forms.TimeInput(attrs={"class": "form-control", "type": "time"}),
             "meeting_place": forms.TextInput(attrs={"class": "form-control"}),
-            "latitude": forms.NumberInput(attrs={"class": "form-control", "step": "0.000001"}),
-            "longitude": forms.NumberInput(attrs={"class": "form-control", "step": "0.000001"}),
             "max_participants": forms.NumberInput(attrs={"class": "form-control"}),
+            "price": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "step": "0.01",
+                    "min": "0",
+                    "placeholder": "Es. 25.00"
+                }
+            ),
             "what_to_bring": forms.Textarea(attrs={"class": "form-control"}),
             "requires_booking": forms.CheckboxInput(attrs={"class": "form-check-input"}),
         }
+
+        labels = {
+            "price": "Prezzo",
+        }
+
+        help_texts = {
+            "price": "Lascia vuoto se l'attività è gratuita o se il prezzo non è previsto.",
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        requires_booking = cleaned_data.get("requires_booking")
+        max_participants = cleaned_data.get("max_participants")
+
+        if requires_booking and not max_participants:
+            self.add_error(
+                "max_participants",
+                "Inserisci il numero massimo di partecipanti per le attività prenotabili."
+            )
+
+        return cleaned_data
 
 
 class NoticeForm(forms.ModelForm):

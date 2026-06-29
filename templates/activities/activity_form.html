@@ -14,7 +14,7 @@
             </h1>
 
             <p class="text-muted mb-0">
-                Inserisci le informazioni dell'attività. I campi latitudine e longitudine servono per mostrarla sulla mappa.
+                Inserisci le informazioni dell'attività. Le attività senza prenotazione possono essere usate per eventi di gruppo, cene, check-in, check-out e informazioni utili.
             </p>
         </div>
 
@@ -73,6 +73,10 @@
                             {{ form.description.errors }}
                         </div>
                     {% endif %}
+
+                    <div class="form-text">
+                        Campo facoltativo.
+                    </div>
                 </div>
 
                 <div class="mb-3">
@@ -126,6 +130,10 @@
                                 {{ form.end_time.errors }}
                             </div>
                         {% endif %}
+
+                        <div class="form-text">
+                            Campo facoltativo.
+                        </div>
                     </div>
                 </div>
 
@@ -144,51 +152,38 @@
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label class="form-label" for="{{ form.latitude.id_for_label }}">
-                            Latitudine
+                        <label class="form-label" for="{{ form.max_participants.id_for_label }}">
+                            Numero massimo partecipanti
                         </label>
-                        {{ form.latitude }}
+                        {{ form.max_participants }}
 
-                        {% if form.latitude.errors %}
+                        {% if form.max_participants.errors %}
                             <div class="text-danger small mt-1">
-                                {{ form.latitude.errors }}
+                                {{ form.max_participants.errors }}
                             </div>
                         {% endif %}
 
                         <div class="form-text">
-                            Esempio: 46.498300
+                            Obbligatorio solo per le attività prenotabili.
                         </div>
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label" for="{{ form.longitude.id_for_label }}">
-                            Longitudine
+                        <label class="form-label" for="{{ form.price.id_for_label }}">
+                            Prezzo
                         </label>
-                        {{ form.longitude }}
+                        {{ form.price }}
 
-                        {% if form.longitude.errors %}
+                        {% if form.price.errors %}
                             <div class="text-danger small mt-1">
-                                {{ form.longitude.errors }}
+                                {{ form.price.errors }}
                             </div>
                         {% endif %}
 
                         <div class="form-text">
-                            Esempio: 11.354800
+                            Lascia vuoto se l'attività è gratuita o se il prezzo non è previsto.
                         </div>
                     </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" for="{{ form.max_participants.id_for_label }}">
-                        Numero massimo partecipanti
-                    </label>
-                    {{ form.max_participants }}
-
-                    {% if form.max_participants.errors %}
-                        <div class="text-danger small mt-1">
-                            {{ form.max_participants.errors }}
-                        </div>
-                    {% endif %}
                 </div>
 
                 <div class="mb-3">
@@ -202,6 +197,10 @@
                             {{ form.what_to_bring.errors }}
                         </div>
                     {% endif %}
+
+                    <div class="form-text">
+                        Campo facoltativo.
+                    </div>
                 </div>
 
                 <div class="form-check mb-4">
@@ -216,6 +215,10 @@
                             {{ form.requires_booking.errors }}
                         </div>
                     {% endif %}
+
+                    <div class="form-text">
+                        Disattiva questa opzione per eventi di gruppo, info utili, cene comuni, check-in e check-out.
+                    </div>
                 </div>
 
                 <div class="d-flex gap-2 flex-wrap">

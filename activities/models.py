@@ -1,4 +1,7 @@
+from decimal import Decimal
+
 from django.conf import settings
+from django.core.validators import MinValueValidator
 from django.db import models
 
 
@@ -22,7 +25,7 @@ class Activity(models.Model):
         blank=True,
         related_name="activities"
     )
-    description = models.TextField()
+    description = models.TextField(blank=True)
     image = models.ImageField(
         upload_to="activities/",
         blank=True,
@@ -33,21 +36,21 @@ class Activity(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField(blank=True, null=True)
     meeting_place = models.CharField(max_length=200)
-    latitude = models.DecimalField(
-        max_digits=9,
-        decimal_places=6,
+    max_participants = models.PositiveIntegerField(
         blank=True,
         null=True,
-        verbose_name="Latitudine"
+        verbose_name="Numero massimo partecipanti"
     )
-    longitude = models.DecimalField(
-        max_digits=9,
-        decimal_places=6,
+    price = models.DecimalField(
+        max_digits=7,
+        decimal_places=2,
         blank=True,
         null=True,
-        verbose_name="Longitudine"
+        validators=[
+            MinValueValidator(Decimal("0.00"))
+        ],
+        verbose_name="Prezzo"
     )
-    max_participants = models.PositiveIntegerField()
     what_to_bring = models.TextField(blank=True)
     requires_booking = models.BooleanField(
         default=True,
@@ -73,6 +76,9 @@ class Activity(models.Model):
         if not self.requires_booking:
             return None
 
+        if self.max_participants is None:
+            return None
+
         return self.max_participants - self.booked_count
 
     @property
@@ -80,11 +86,17 @@ class Activity(models.Model):
         if not self.requires_booking:
             return False
 
+        if self.available_spots is None:
+            return False
+
         return self.available_spots <= 0
 
     @property
     def is_almost_full(self):
         if not self.requires_booking:
+            return False
+
+        if self.available_spots is None:
             return False
 
         return not self.is_full and self.available_spots <= 3

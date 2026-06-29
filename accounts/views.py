@@ -59,37 +59,44 @@ def home(request):
         "-created_at"
     ).first()
 
-    hero_activity = Activity.objects.filter(
-        requires_booking=False,
+    first_future_activity = Activity.objects.filter(
         date__gte=today
     ).order_by(
         "date",
         "start_time"
     ).first()
 
-    if hero_activity is None:
-        hero_activity = Activity.objects.filter(
-            requires_booking=False
-        ).order_by(
-            "date",
-            "start_time"
-        ).first()
-
     first_activity = Activity.objects.all().order_by(
         "date",
         "start_time"
     ).first()
 
-    if first_activity:
+    today_has_activities = Activity.objects.filter(
+        date=today
+    ).exists()
+
+    if today_has_activities:
+        selected_date = today
+    elif first_future_activity:
+        selected_date = first_future_activity.date
+    elif first_activity:
         selected_date = first_activity.date
-        next_today_activity = Activity.objects.filter(
+    else:
+        selected_date = None
+
+    if selected_date:
+        hero_activities = Activity.objects.filter(
             date=selected_date
         ).order_by(
             "start_time"
-        ).first()
+        )
+
+        next_today_activity = hero_activities.first()
+        hero_activity = hero_activities.first()
     else:
-        selected_date = None
+        hero_activities = Activity.objects.none()
         next_today_activity = None
+        hero_activity = None
 
     next_available_activity = Activity.objects.filter(
         requires_booking=True
@@ -132,6 +139,7 @@ def home(request):
     context = {
         "latest_notice": latest_notice,
         "hero_activity": hero_activity,
+        "hero_activities": hero_activities,
         "selected_date": selected_date,
         "next_today_activity": next_today_activity,
         "next_available_activity": next_available_activity,
@@ -143,7 +151,6 @@ def home(request):
     }
 
     return render(request, "accounts/home.html", context)
-
 
 @login_required
 def dashboard(request):

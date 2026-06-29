@@ -194,7 +194,8 @@ textarea {
    ========================= */
 
 .home-hero-image {
-    min-height: 390px;
+    height: 430px;
+    min-height: 430px;
     border-radius: 28px;
     overflow: hidden;
     background-size: cover;
@@ -204,7 +205,8 @@ textarea {
 }
 
 .home-hero-overlay {
-    min-height: 390px;
+    height: 430px;
+    min-height: 430px;
     background: linear-gradient(
         90deg,
         rgba(17, 24, 39, 0.78) 0%,
@@ -214,6 +216,55 @@ textarea {
     display: flex;
     align-items: flex-end;
     padding: 42px;
+}
+
+#homeHeroCarousel,
+#homeHeroCarousel .carousel-inner,
+#homeHeroCarousel .carousel-item {
+    height: 430px;
+}
+
+#homeHeroCarousel .home-hero-image {
+    margin-bottom: 0;
+}
+
+.home-hero-content {
+    max-height: 100%;
+    overflow: hidden;
+}
+#homeHeroCarousel .carousel-control-prev,
+#homeHeroCarousel .carousel-control-next {
+    top: auto;
+    bottom: 26px;
+    width: 46px;
+    height: 46px;
+    background-color: rgba(17, 24, 39, 0.58);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 999px;
+    opacity: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#homeHeroCarousel .carousel-control-prev {
+    left: auto;
+    right: 84px;
+}
+
+#homeHeroCarousel .carousel-control-next {
+    right: 28px;
+}
+
+#homeHeroCarousel .carousel-control-prev:hover,
+#homeHeroCarousel .carousel-control-next:hover {
+    background-color: rgba(17, 24, 39, 0.82);
+}
+
+#homeHeroCarousel .carousel-control-prev-icon,
+#homeHeroCarousel .carousel-control-next-icon {
+    width: 20px;
+    height: 20px;
 }
 
 .home-hero-content {
@@ -251,17 +302,19 @@ textarea {
 .home-hero-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
     margin-bottom: 24px;
+    max-width: 980px;
 }
 
 .home-hero-meta span {
     background-color: rgba(255, 255, 255, 0.16);
     border: 1px solid rgba(255, 255, 255, 0.26);
     border-radius: 999px;
-    padding: 8px 13px;
+    padding: 7px 11px;
     color: #ffffff;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    white-space: nowrap;
 }
 
 .home-hero-buttons {
@@ -669,8 +722,18 @@ textarea {
     }
 
     .home-hero-image,
-    .home-hero-overlay {
-        min-height: 430px;
+
+    .home-hero-overlay,
+
+    #homeHeroCarousel,
+
+    #homeHeroCarousel .carousel-inner,
+
+    #homeHeroCarousel .carousel-item {
+
+        height: 470px;
+
+        min-height: 470px;
     }
 
     .home-grid {
@@ -780,5 +843,342 @@ textarea {
 
     .activity-detail-hero img {
         height: 240px;
+    }
+}
+
+
+.week-calendar {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 22px;
+}
+
+.week-day-card {
+    background-color: #ffffff;
+    border: 1px solid #dce2e8;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.05);
+}
+
+.week-day-header {
+    background: linear-gradient(135deg, #ffffff 0%, #e9f6ef 100%);
+    border-bottom: 1px solid #dce2e8;
+    padding: 24px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 18px;
+}
+
+.week-day-name {
+    color: #198754;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.week-day-header h2 {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: #111827;
+    margin: 0;
+}
+
+.week-day-count {
+    background-color: #ffffff;
+    border: 1px solid #cfe7d8;
+    color: #198754;
+    border-radius: 999px;
+    padding: 7px 13px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.week-day-body {
+    padding: 24px 28px 28px;
+}
+
+.timeline-item {
+    display: grid;
+    grid-template-columns: 88px 28px 1fr;
+    gap: 14px;
+    position: relative;
+}
+
+.timeline-item:not(:last-child) {
+    margin-bottom: 20px;
+}
+
+.timeline-time {
+    text-align: right;
+    padding-top: 4px;
+}
+
+.timeline-time strong {
+    display: block;
+    color: #111827;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.timeline-time span {
+    display: block;
+    color: #6b7280;
+    font-size: 0.8rem;
+    margin-top: 5px;
+}
+
+.timeline-line {
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.timeline-line::before {
+    content: "";
+    position: absolute;
+    top: 22px;
+    bottom: -22px;
+    width: 2px;
+    background-color: #dce2e8;
+}
+
+.timeline-item:last-child .timeline-line::before {
+    display: none;
+}
+
+.timeline-line span {
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    background-color: #198754;
+    border: 4px solid #e9f6ef;
+    margin-top: 5px;
+    z-index: 1;
+}
+
+.timeline-card {
+    background-color: #f9faf8;
+    border: 1px solid #e1e5ea;
+    border-radius: 20px;
+    padding: 18px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.timeline-card:hover {
+    transform: translateY(-2px);
+    border-color: #b8dcc8;
+    box-shadow: 0 10px 24px rgba(25, 135, 84, 0.08);
+}
+
+.timeline-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 8px;
+}
+
+.timeline-title a {
+    color: #111827;
+    text-decoration: none;
+}
+
+.timeline-title a:hover {
+    color: #198754;
+}
+
+.timeline-place {
+    color: #4b5563;
+    font-size: 0.95rem;
+}
+
+.timeline-description {
+    color: #6b7280;
+    font-size: 0.92rem;
+    margin-bottom: 14px;
+}
+
+.timeline-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+@media (max-width: 768px) {
+    .week-day-header {
+        flex-direction: column;
+        padding: 22px;
+    }
+
+    .week-day-body {
+        padding: 20px;
+    }
+
+    .timeline-item {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .timeline-time {
+        text-align: left;
+        display: flex;
+        gap: 8px;
+        align-items: baseline;
+    }
+
+    .timeline-line {
+        display: none;
+    }
+
+    .timeline-card {
+        padding: 16px;
+    }
+}
+
+.program-calendar {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.program-day-card {
+    background-color: #ffffff;
+    border: 1px solid #dce2e8;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+}
+
+.program-day-header {
+    padding: 24px 28px;
+    background: linear-gradient(135deg, #ffffff 0%, #e9f6ef 100%);
+    border-bottom: 1px solid #dce2e8;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 18px;
+}
+
+.program-day-header h2 {
+    font-size: 1.7rem;
+    font-weight: 800;
+    margin: 0;
+    color: #111827;
+}
+
+.program-day-count {
+    background-color: #ffffff;
+    color: #198754;
+    border: 1px solid #cde8d7;
+    border-radius: 999px;
+    padding: 7px 13px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.program-day-body {
+    padding: 0;
+}
+
+.program-activity-row {
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    gap: 22px;
+    padding: 24px 28px;
+    border-bottom: 1px solid #e5e7eb;
+    align-items: start;
+}
+
+.program-activity-row:last-child {
+    border-bottom: 0;
+}
+
+.program-time {
+    color: #111827;
+}
+
+.program-time strong {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.program-time span {
+    display: block;
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin-top: 6px;
+}
+
+.program-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-bottom: 10px;
+}
+
+.program-main h3 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    margin-bottom: 7px;
+}
+
+.program-main h3 a {
+    color: #111827;
+    text-decoration: none;
+}
+
+.program-main h3 a:hover {
+    color: #198754;
+}
+
+.program-place {
+    color: #4b5563;
+    margin-bottom: 6px;
+}
+
+.program-description {
+    color: #6b7280;
+    margin-bottom: 0;
+}
+
+.program-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 110px;
+}
+
+@media (max-width: 768px) {
+    .program-day-header {
+        flex-direction: column;
+        padding: 22px;
+    }
+
+    .program-activity-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 22px;
+    }
+
+    .program-time {
+        display: flex;
+        gap: 8px;
+        align-items: baseline;
+    }
+
+    .program-time strong {
+        font-size: 1rem;
+    }
+
+    .program-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
     }
 }

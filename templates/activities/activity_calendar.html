@@ -3,16 +3,260 @@
 {% block title %}Calendario{% endblock %}
 
 {% block content %}
+    <style>
+        .weekly-calendar-page {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .weekly-calendar-shell {
+            background-color: #ffffff;
+            border: 1px solid #dce2e8;
+            border-radius: 24px;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .weekly-calendar-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            padding: 22px 26px;
+            border-bottom: 1px solid #e5e7eb;
+            background-color: #ffffff;
+        }
+
+        .weekly-calendar-topbar h2 {
+            margin: 0;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .weekly-calendar-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            border-radius: 999px;
+            margin-right: 5px;
+        }
+
+        .legend-bookable {
+            background-color: #198754;
+        }
+
+        .legend-group {
+            background-color: #0dcaf0;
+        }
+
+        .legend-info {
+            background-color: #f59e0b;
+        }
+
+        .legend-game {
+            background-color: #dc3545;
+        }
+
+        .week-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            background-color: #e5e7eb;
+            gap: 1px;
+        }
+
+        .day-column {
+            background-color: #f9fafb;
+            min-height: 430px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .day-header {
+            background-color: #ffffff;
+            padding: 18px 18px 14px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .day-name {
+            color: #198754;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .day-date {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .day-number {
+            font-size: 2.1rem;
+            line-height: 1;
+            font-weight: 850;
+            color: #111827;
+        }
+
+        .day-month {
+            color: #6b7280;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .day-count {
+            display: inline-flex;
+            margin-top: 10px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background-color: #e9f6ef;
+            color: #198754;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .events-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 14px;
+        }
+
+        .calendar-event {
+            display: block;
+            border-radius: 14px;
+            padding: 12px 13px;
+            text-decoration: none;
+            color: #111827;
+            border: 1px solid transparent;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+        }
+
+        .calendar-event:hover {
+            color: #111827;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .calendar-event-bookable {
+            background-color: #e9f6ef;
+            border-color: #b8dcc8;
+        }
+
+        .calendar-event-group {
+            background-color: #e8f7fb;
+            border-color: #aee3ee;
+        }
+
+        .calendar-event-info {
+            background-color: #fff4e5;
+            border-color: #ffd8a8;
+        }
+
+        .calendar-event-game {
+            background-color: #fde8e8;
+            border-color: #f5b5b5;
+        }
+
+.calendar-event-game .event-time {
+    color: #b42318;
+}
+
+        .event-time {
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: #198754;
+            margin-bottom: 7px;
+        }
+
+        .calendar-event-group .event-time {
+            color: #087990;
+        }
+
+        .calendar-event-info .event-time {
+            color: #b45309;
+        }
+
+        .event-title {
+            font-size: 0.98rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 7px;
+        }
+
+        .event-meta {
+            color: #4b5563;
+            font-size: 0.83rem;
+            line-height: 1.25;
+            margin-bottom: 8px;
+        }
+
+        .event-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .event-type {
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .event-extra {
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: #6b7280;
+        }
+
+        .empty-day {
+            padding: 16px;
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .weekly-calendar-topbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .week-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .day-column {
+                min-height: auto;
+            }
+        }
+    </style>
+
     <section class="page-header mb-4">
         <div>
             <p class="section-label mb-2">Calendario</p>
 
             <h1 class="mb-2">
-                Calendario della settimana
+                Programma della settimana
             </h1>
 
             <p class="text-muted mb-0">
-                Qui trovi sia le attività prenotabili sia gli eventi di gruppo.
+                Vista settimanale chiara, con attività prenotabili, eventi di gruppo e informazioni organizzative.
             </p>
         </div>
 
@@ -24,56 +268,126 @@
     </section>
 
     {% if activities_by_date %}
-        <section class="calendar-grid">
-            {% for date, activities in activities_by_date.items %}
-                <article class="card shadow-sm clean-card calendar-day">
-                    <div class="card-body">
-                        <div class="section-label">
-                            {{ date|date:"l" }}
-                        </div>
+        <section class="weekly-calendar-page">
+            <div class="weekly-calendar-shell">
+                <div class="weekly-calendar-topbar">
+                    <h2>
+                        Settimana attività
+                    </h2>
 
-                        <h2 class="h5 mb-3">
-                            {{ date|date:"d F Y" }}
-                        </h2>
+                    <div class="weekly-calendar-legend">
+                        <span>
+                            <span class="legend-dot legend-bookable"></span>
+                            Prenotabile
+                        </span>
 
-                        {% for activity in activities %}
-                            <div class="calendar-activity rounded p-3 mb-3">
-                                {% if activity.requires_booking %}
-                                    <span class="badge text-bg-success mb-2">
-                                        Prenotabile
+                        <span>
+                            <span class="legend-dot legend-group"></span>
+                            Evento di gruppo
+                        </span>
+
+                        <span>
+                            <span class="legend-dot legend-info"></span>
+                            Info utili
+                        </span>
+
+                        <span>
+                             <span class="legend-dot legend-game"></span>
+                            Gioco
+                        </span>
+                    </div>
+                </div>
+
+                <div class="week-grid">
+                    {% for date, activities in activities_by_date.items %}
+                        <article class="day-column">
+                            <header class="day-header">
+                                <div class="day-name">
+                                    {{ date|date:"l" }}
+                                </div>
+
+                                <div class="day-date">
+                                    <span class="day-number">
+                                        {{ date|date:"d" }}
                                     </span>
-                                {% else %}
-                                    <span class="badge text-bg-info mb-2">
-                                        Evento di gruppo
-                                    </span>
-                                {% endif %}
 
-                                <h3 class="h6 mb-1">
+                                    <span class="day-month">
+                                        {{ date|date:"F Y" }}
+                                    </span>
+                                </div>
+
+                                <span class="day-count">
+                                    {{ activities|length }} attività
+                                </span>
+                            </header>
+
+                            <div class="events-list">
+                                {% for activity in activities %}
                                     <a
                                         href="{% url 'activities:activity_detail' activity.pk %}"
-                                        class="text-decoration-none text-dark"
-                                    >
-                                        {{ activity.title }}
+                                        class="calendar-event {% if activity.category and activity.category.name == 'Gioco' %}calendar-event-game{% elif activity.category and activity.category.name == 'Info utili' %}calendar-event-info{% elif activity.requires_booking %}calendar-event-bookable{% else %}calendar-event-group{% endif %}"                                    >
+                                        <div class="event-time">
+                                            {{ activity.start_time|time:"H:i" }}
+
+                                            {% if activity.end_time %}
+                                                - {{ activity.end_time|time:"H:i" }}
+                                            {% else %}
+                                                - durata stimata 3h
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="event-title">
+                                            {{ activity.title }}
+                                        </div>
+
+                                        <div class="event-meta">
+                                            Ritrovo: {{ activity.meeting_place }}
+                                        </div>
+
+                                        <div class="event-footer">
+                                            <span class="event-type">
+                                                {% if activity.category and activity.category.name == "Gioco" %}
+                                                    Gioco
+                                                {% elif activity.category and activity.category.name == "Info utili" %}
+                                                    Info utile
+                                                {% elif activity.requires_booking %}
+                                                    Prenotabile
+                                                {% else %}
+                                                    Evento gruppo
+                                                {% endif %}
+                                            </span>
+
+                                            {% if activity.category and activity.category.name == "Info utili" %}
+                                                <span class="event-extra">
+                                                    {{ activity.category.name }}
+                                                </span>
+                                            {% elif activity.requires_booking %}
+                                                <span class="event-extra">
+                                                    {% if activity.is_full %}
+                                                        Completa
+                                                    {% elif activity.is_almost_full %}
+                                                        Quasi piena
+                                                    {% else %}
+                                                        {{ activity.available_spots }} posti
+                                                    {% endif %}
+                                                </span>
+                                            {% elif activity.category %}
+                                                <span class="event-extra">
+                                                    {{ activity.category.name }}
+                                                </span>
+                                            {% endif %}
+                                        </div>
                                     </a>
-                                </h3>
-
-                                <p class="text-muted small mb-1">
-                                    {{ activity.start_time|time:"H:i" }}
-                                    {% if activity.end_time %}
-                                        - {{ activity.end_time|time:"H:i" }}
-                                    {% else %}
-                                        - durata stimata 3 ore
-                                    {% endif %}
-                                </p>
-
-                                <p class="text-muted small mb-0">
-                                    {{ activity.meeting_place }}
-                                </p>
+                                {% empty %}
+                                    <div class="empty-day">
+                                        Nessuna attività.
+                                    </div>
+                                {% endfor %}
                             </div>
-                        {% endfor %}
-                    </div>
-                </article>
-            {% endfor %}
+                        </article>
+                    {% endfor %}
+                </div>
+            </div>
         </section>
     {% else %}
         <section class="empty-state">
