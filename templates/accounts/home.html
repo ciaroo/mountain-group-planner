@@ -6,7 +6,7 @@
 {% block content %}
     {% if hero_activities %}
         <section id="homeHeroCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
-            <div class="carousel-indicators">
+            <div class="carousel-indicators home-hero-indicators">
                 {% for activity in hero_activities %}
                     <button
                         type="button"
@@ -14,7 +14,13 @@
                         data-bs-slide-to="{{ forloop.counter0 }}"
                         {% if forloop.first %}class="active" aria-current="true"{% endif %}
                         aria-label="Attività {{ forloop.counter }}"
-                    ></button>
+                    >
+                        <span class="home-hero-indicator-label">
+                            {{ activity.date|date:"D d/m" }}
+                        </span>
+
+                        <span class="home-hero-indicator-dot"></span>
+                    </button>
                 {% endfor %}
             </div>
 
@@ -39,19 +45,7 @@
                                         {{ activity.title }}
                                     </h1>
 
-                                    {% if activity.description %}
-                                        <p class="home-hero-description">
-                                            {{ activity.description|truncatechars:150 }}
-                                        </p>
-                                    {% else %}
-                                        <p class="home-hero-description">
-                                            Evento in programma per la giornata.
-                                        </p>
-                                    {% endif %}
-
                                     <div class="home-hero-meta">
-                                        <span>{{ activity.date|date:"l d F Y" }}</span>
-
                                         <span>
                                             {{ activity.start_time|time:"H:i" }}
                                             {% if activity.end_time %}
@@ -59,22 +53,14 @@
                                             {% endif %}
                                         </span>
 
-                                        <span>{{ activity.meeting_place }}</span>
-
-                                        {% if activity.category %}
-                                            <span>{{ activity.category.name }}</span>
-                                        {% endif %}
+                                        <span>
+                                            {{ activity.meeting_place }}
+                                        </span>
 
                                         {% if activity.requires_booking %}
-                                            {% if activity.is_full %}
-                                                <span>Completa</span>
-                                            {% elif activity.is_almost_full %}
-                                                <span>Quasi piena</span>
-                                            {% else %}
-                                                <span>{{ activity.available_spots }} posti disponibili</span>
-                                            {% endif %}
-                                        {% else %}
-                                            <span>Evento di gruppo</span>
+                                            <a href="{% url 'activities:activity_detail' activity.pk %}" class="btn-hero-booking">
+                                                Prenotati
+                                            </a>
                                         {% endif %}
                                     </div>
 

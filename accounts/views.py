@@ -1,5 +1,5 @@
 import csv
-
+from datetime import timedelta
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
@@ -94,44 +94,35 @@ def home(request):
         "-created_at"
     ).first()
 
-    first_future_activity = Activity.objects.filter(
+    hero_activities = []
+
+    hero_dates = Activity.objects.filter(
         date__gte=today
     ).order_by(
+        "date"
+    ).values_list(
         "date",
-        "start_time"
-    ).first()
+        flat=True
+    ).distinct()[:3]
 
-    first_activity = Activity.objects.all().order_by(
-        "date",
-        "start_time"
-    ).first()
-
-    today_has_activities = Activity.objects.filter(
-        date=today
-    ).exists()
-
-    if today_has_activities:
-        selected_date = today
-    elif first_future_activity:
-        selected_date = first_future_activity.date
-    elif first_activity:
-        selected_date = first_activity.date
-    else:
-        selected_date = None
-
-    if selected_date:
-        hero_activities = Activity.objects.filter(
-            date=selected_date
+    for hero_date in hero_dates:
+        first_activity_for_day = Activity.objects.filter(
+            date=hero_date
         ).order_by(
             "start_time"
-        )
+        ).first()
 
-        next_today_activity = hero_activities.first()
-        hero_activity = hero_activities.first()
+        if first_activity_for_day:
+            hero_activities.append(first_activity_for_day)
+
+    if hero_activities:
+        selected_date = hero_activities[0].date
+        hero_activity = hero_activities[0]
+        next_today_activity = hero_activities[0]
     else:
-        hero_activities = Activity.objects.none()
-        next_today_activity = None
+        selected_date = None
         hero_activity = None
+        next_today_activity = None
 
     next_available_activity = Activity.objects.filter(
         requires_booking=True

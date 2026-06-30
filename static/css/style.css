@@ -218,7 +218,12 @@ textarea {
     padding: 42px;
 }
 
-#homeHeroCarousel,
+
+#homeHeroCarousel {
+    height: auto;
+    margin-bottom: 2rem;
+}
+
 #homeHeroCarousel .carousel-inner,
 #homeHeroCarousel .carousel-item {
     height: 430px;
@@ -722,18 +727,15 @@ textarea {
     }
 
     .home-hero-image,
-
     .home-hero-overlay,
-
-    #homeHeroCarousel,
-
     #homeHeroCarousel .carousel-inner,
-
     #homeHeroCarousel .carousel-item {
-
         height: 470px;
-
         min-height: 470px;
+    }
+
+    #homeHeroCarousel {
+        height: auto;
     }
 
     .home-grid {
@@ -1181,4 +1183,80 @@ textarea {
         flex-direction: row;
         flex-wrap: wrap;
     }
+}
+.btn-hero-booking {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(220, 53, 69, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 999px;
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1;
+    padding: 8px 13px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn-hero-booking:hover {
+    background-color: rgba(220, 53, 69, 0.9);
+    border-color: rgba(255, 255, 255, 0.42);
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.home-hero-indicators {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    z-index: 1;
+    margin: 0 0 1rem 0;
+    padding: 0;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.home-hero-indicators [data-bs-target] {
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0.35rem 0.6rem;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(220, 53, 69, 0.08);
+    opacity: 1;
+    text-indent: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.home-hero-indicator-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(33, 37, 41, 0.65);
+    line-height: 1;
+}
+
+.home-hero-indicator-dot {
+    width: 13px;
+    height: 13px;
+    border-radius: 999px;
+    background-color: rgba(220, 53, 69, 0.35);
+    display: inline-block;
+}
+
+.home-hero-indicators .active {
+    background: rgba(220, 53, 69, 0.15);
+}
+
+.home-hero-indicators .active .home-hero-indicator-label {
+    color: rgba(33, 37, 41, 0.9);
+}
+
+.home-hero-indicators .active .home-hero-indicator-dot {
+    background-color: rgba(220, 53, 69, 0.9);
 }
