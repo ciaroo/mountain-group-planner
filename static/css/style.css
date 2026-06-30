@@ -196,127 +196,89 @@ textarea {
 .home-hero-image {
     height: 430px;
     min-height: 430px;
+    border: 1px solid #dce2e8;
     border-radius: 28px;
     overflow: hidden;
-    background-size: cover;
     background-position: center;
-    border: 1px solid #dce2e8;
+    background-size: cover;
     box-shadow: 0 14px 38px rgba(0, 0, 0, 0.12);
 }
 
 .home-hero-overlay {
     height: 430px;
     min-height: 430px;
+    padding: 42px;
+    display: flex;
+    align-items: flex-end;
     background: linear-gradient(
         90deg,
         rgba(17, 24, 39, 0.78) 0%,
         rgba(17, 24, 39, 0.58) 45%,
         rgba(17, 24, 39, 0.18) 100%
     );
-    display: flex;
-    align-items: flex-end;
-    padding: 42px;
 }
 
-
-#homeHeroCarousel {
+[id^="homeHeroCarousel"] {
     height: auto;
     margin-bottom: 2rem;
 }
 
-#homeHeroCarousel .carousel-inner,
-#homeHeroCarousel .carousel-item {
+[id^="homeHeroCarousel"] .carousel-inner,
+[id^="homeHeroCarousel"] .carousel-item {
     height: 430px;
 }
 
-#homeHeroCarousel .home-hero-image {
+[id^="homeHeroCarousel"] .home-hero-image {
     margin-bottom: 0;
 }
 
 .home-hero-content {
+    max-width: 720px;
     max-height: 100%;
     overflow: hidden;
-}
-#homeHeroCarousel .carousel-control-prev,
-#homeHeroCarousel .carousel-control-next {
-    top: auto;
-    bottom: 26px;
-    width: 46px;
-    height: 46px;
-    background-color: rgba(17, 24, 39, 0.58);
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    border-radius: 999px;
-    opacity: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#homeHeroCarousel .carousel-control-prev {
-    left: auto;
-    right: 84px;
-}
-
-#homeHeroCarousel .carousel-control-next {
-    right: 28px;
-}
-
-#homeHeroCarousel .carousel-control-prev:hover,
-#homeHeroCarousel .carousel-control-next:hover {
-    background-color: rgba(17, 24, 39, 0.82);
-}
-
-#homeHeroCarousel .carousel-control-prev-icon,
-#homeHeroCarousel .carousel-control-next-icon {
-    width: 20px;
-    height: 20px;
-}
-
-.home-hero-content {
-    max-width: 720px;
     color: #ffffff;
 }
 
 .home-hero-kicker {
     display: inline-block;
-    background-color: rgba(255, 255, 255, 0.18);
+    margin-bottom: 14px;
+    padding: 7px 13px;
     border: 1px solid rgba(255, 255, 255, 0.35);
     border-radius: 999px;
-    padding: 7px 13px;
+    background-color: rgba(255, 255, 255, 0.18);
     font-size: 0.8rem;
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    margin-bottom: 14px;
 }
 
 .home-hero-content h1 {
+    margin-bottom: 16px;
     font-size: 3rem;
     font-weight: 850;
     line-height: 1.05;
-    margin-bottom: 16px;
 }
 
 .home-hero-description {
-    color: rgba(255, 255, 255, 0.86);
-    font-size: 1.08rem;
     max-width: 620px;
     margin-bottom: 18px;
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 1.08rem;
 }
 
 .home-hero-meta {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-bottom: 24px;
     max-width: 980px;
+    margin-bottom: 24px;
 }
 
 .home-hero-meta span {
-    background-color: rgba(255, 255, 255, 0.16);
+    padding: 7px 11px;
     border: 1px solid rgba(255, 255, 255, 0.26);
     border-radius: 999px;
-    padding: 7px 11px;
+    background-color: rgba(255, 255, 255, 0.16);
     color: #ffffff;
     font-size: 0.9rem;
     white-space: nowrap;
@@ -326,6 +288,65 @@ textarea {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+}
+
+.btn-hero-booking {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 13px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 999px;
+    background-color: rgba(220, 53, 69, 0.72);
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn-hero-booking:hover {
+    border-color: rgba(255, 255, 255, 0.42);
+    background-color: rgba(220, 53, 69, 0.9);
+    color: #ffffff;
+    text-decoration: none;
+}
+
+[id^="homeHeroCarousel"] .carousel-control-prev,
+[id^="homeHeroCarousel"] .carousel-control-next {
+    top: 50%;
+    bottom: auto;
+    width: 34px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    background: transparent;
+    opacity: 0.85;
+    transform: translateY(-50%);
+}
+
+[id^="homeHeroCarousel"] .carousel-control-prev {
+    left: 8px;
+    right: auto;
+}
+
+[id^="homeHeroCarousel"] .carousel-control-next {
+    right: 8px;
+}
+
+[id^="homeHeroCarousel"] .carousel-control-prev:hover,
+[id^="homeHeroCarousel"] .carousel-control-next:hover {
+    opacity: 1;
+}
+
+[id^="homeHeroCarousel"] .carousel-control-prev-icon,
+[id^="homeHeroCarousel"] .carousel-control-next-icon {
+    width: 18px;
+    height: 18px;
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.65));
 }
 
 
@@ -728,13 +749,13 @@ textarea {
 
     .home-hero-image,
     .home-hero-overlay,
-    #homeHeroCarousel .carousel-inner,
-    #homeHeroCarousel .carousel-item {
+    [id^="homeHeroCarousel"] .carousel-inner,
+    [id^="homeHeroCarousel"] .carousel-item {
         height: 470px;
         min-height: 470px;
     }
 
-    #homeHeroCarousel {
+    [id^="homeHeroCarousel"] {
         height: auto;
     }
 
@@ -1184,28 +1205,10 @@ textarea {
         flex-wrap: wrap;
     }
 }
-.btn-hero-booking {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(220, 53, 69, 0.72);
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    border-radius: 999px;
-    color: #ffffff;
-    font-size: 0.9rem;
-    font-weight: 700;
-    line-height: 1;
-    padding: 8px 13px;
-    text-decoration: none;
-    white-space: nowrap;
-}
 
-.btn-hero-booking:hover {
-    background-color: rgba(220, 53, 69, 0.9);
-    border-color: rgba(255, 255, 255, 0.42);
-    color: #ffffff;
-    text-decoration: none;
-}
+/* =========================
+   Home hero day selector
+   ========================= */
 
 .home-hero-indicators {
     position: relative;
@@ -1213,10 +1216,12 @@ textarea {
     bottom: auto;
     left: auto;
     z-index: 1;
+    display: flex;
     margin: 0 0 1rem 0;
     padding: 0;
     justify-content: center;
     gap: 1rem;
+    pointer-events: auto;
 }
 
 .home-hero-indicators [data-bs-target] {
@@ -1259,4 +1264,33 @@ textarea {
 
 .home-hero-indicators .active .home-hero-indicator-dot {
     background-color: rgba(220, 53, 69, 0.9);
+}
+
+
+@media (max-width: 576px) {
+    .home-hero-indicators {
+        gap: 0.5rem;
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: 4px;
+    }
+
+    .home-hero-indicators [data-bs-target] {
+        flex-shrink: 0;
+        padding: 0.32rem 0.52rem;
+    }
+
+    [id^="homeHeroCarousel"] .carousel-control-prev,
+    [id^="homeHeroCarousel"] .carousel-control-next {
+        width: 28px;
+        height: 64px;
+    }
+
+    [id^="homeHeroCarousel"] .carousel-control-prev {
+        left: 4px;
+    }
+
+    [id^="homeHeroCarousel"] .carousel-control-next {
+        right: 4px;
+    }
 }

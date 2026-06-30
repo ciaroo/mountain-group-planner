@@ -4,104 +4,118 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-    {% if hero_activities %}
-        <section id="homeHeroCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
-            <div class="carousel-indicators home-hero-indicators">
-                {% for activity in hero_activities %}
-                    <button
-                        type="button"
-                        data-bs-target="#homeHeroCarousel"
-                        data-bs-slide-to="{{ forloop.counter0 }}"
-                        {% if forloop.first %}class="active" aria-current="true"{% endif %}
-                        aria-label="Attività {{ forloop.counter }}"
+    {% if hero_days %}
+        <div class="home-hero-indicators" role="tablist">
+            {% for day in hero_days %}
+                <button
+                    type="button"
+                    data-bs-toggle="tab"
+                    data-bs-target="#hero-day-{{ forloop.counter }}"
+                    role="tab"
+                    {% if forloop.first %}class="active" aria-current="true"{% endif %}
+                    aria-label="Giorno {{ forloop.counter }}"
+                >
+                    <span class="home-hero-indicator-label">
+                        {{ day.date|date:"D d/m" }}
+                    </span>
+
+                    <span class="home-hero-indicator-dot"></span>
+                </button>
+            {% endfor %}
+        </div>
+
+        <div class="tab-content mb-4">
+            {% for day in hero_days %}
+                <div
+                    class="tab-pane fade {% if forloop.first %}show active{% endif %}"
+                    id="hero-day-{{ forloop.counter }}"
+                >
+                    <section
+                        id="homeHeroCarousel{{ forloop.counter }}"
+                        class="carousel slide"
+                        data-bs-ride="carousel"
                     >
-                        <span class="home-hero-indicator-label">
-                            {{ activity.date|date:"D d/m" }}
-                        </span>
-
-                        <span class="home-hero-indicator-dot"></span>
-                    </button>
-                {% endfor %}
-            </div>
-
-            <div class="carousel-inner">
-                {% for activity in hero_activities %}
-                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                        <section
-                            class="home-hero-image"
-                            {% if activity.image %}
-                                style="background-image: url('{{ activity.image.url }}');"
-                            {% else %}
-                                style="background-image: url('{% static 'img/home-hero.jpg' %}');"
-                            {% endif %}
-                        >
-                            <div class="home-hero-overlay">
-                                <div class="home-hero-content">
-                                    <p class="home-hero-kicker">
-                                        Programma del giorno
-                                    </p>
-
-                                    <h1>
-                                        {{ activity.title }}
-                                    </h1>
-
-                                    <div class="home-hero-meta">
-                                        <span>
-                                            {{ activity.start_time|time:"H:i" }}
-                                            {% if activity.end_time %}
-                                                - {{ activity.end_time|time:"H:i" }}
-                                            {% endif %}
-                                        </span>
-
-                                        <span>
-                                            {{ activity.meeting_place }}
-                                        </span>
-
-                                        {% if activity.requires_booking %}
-                                            <a href="{% url 'activities:activity_detail' activity.pk %}" class="btn-hero-booking">
-                                                Prenotati
-                                            </a>
+                        <div class="carousel-inner">
+                            {% for activity in day.activities %}
+                                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                    <section
+                                        class="home-hero-image"
+                                        {% if activity.image %}
+                                            style="background-image: url('{{ activity.image.url }}');"
+                                        {% else %}
+                                            style="background-image: url('{% static 'img/home-hero.jpg' %}');"
                                         {% endif %}
-                                    </div>
+                                    >
+                                        <div class="home-hero-overlay">
+                                            <div class="home-hero-content">
+                                                <p class="home-hero-kicker">
+                                                    {{ activity.date|date:"l d F Y" }}
+                                                </p>
 
-                                    <div class="home-hero-buttons">
-                                        <a href="{% url 'activities:activity_calendar' %}" class="btn btn-light">
-                                            Vedi calendario
-                                        </a>
+                                                <h1>
+                                                    {{ activity.title }}
+                                                </h1>
 
-                                        <a href="{% url 'activities:activity_detail' activity.pk %}" class="btn btn-outline-light">
-                                            Dettagli evento
-                                        </a>
-                                    </div>
+                                                <div class="home-hero-meta">
+                                                    <span>
+                                                        {{ activity.start_time|time:"H:i" }}
+                                                        {% if activity.end_time %}
+                                                            - {{ activity.end_time|time:"H:i" }}
+                                                        {% endif %}
+                                                    </span>
+
+                                                    <span>
+                                                        {{ activity.meeting_place }}
+                                                    </span>
+
+                                                    {% if activity.requires_booking %}
+                                                        <a href="{% url 'activities:activity_detail' activity.pk %}" class="btn-hero-booking">
+                                                            Prenotati
+                                                        </a>
+                                                    {% endif %}
+                                                </div>
+
+                                                <div class="home-hero-buttons">
+                                                    <a href="{% url 'activities:activity_calendar' %}" class="btn btn-light">
+                                                        Vedi calendario
+                                                    </a>
+
+                                                    <a href="{% url 'activities:activity_detail' activity.pk %}" class="btn btn-outline-light">
+                                                        Dettagli evento
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
                                 </div>
-                            </div>
-                        </section>
-                    </div>
-                {% endfor %}
-            </div>
+                            {% endfor %}
+                        </div>
 
-            {% if hero_activities|length > 1 %}
-                <button
-                    class="carousel-control-prev"
-                    type="button"
-                    data-bs-target="#homeHeroCarousel"
-                    data-bs-slide="prev"
-                >
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Precedente</span>
-                </button>
+                        {% if day.activities|length > 1 %}
+                            <button
+                                class="carousel-control-prev"
+                                type="button"
+                                data-bs-target="#homeHeroCarousel{{ forloop.counter }}"
+                                data-bs-slide="prev"
+                            >
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Precedente</span>
+                            </button>
 
-                <button
-                    class="carousel-control-next"
-                    type="button"
-                    data-bs-target="#homeHeroCarousel"
-                    data-bs-slide="next"
-                >
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Successiva</span>
-                </button>
-            {% endif %}
-        </section>
+                            <button
+                                class="carousel-control-next"
+                                type="button"
+                                data-bs-target="#homeHeroCarousel{{ forloop.counter }}"
+                                data-bs-slide="next"
+                            >
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Successiva</span>
+                            </button>
+                        {% endif %}
+                    </section>
+                </div>
+            {% endfor %}
+        </div>
     {% else %}
         <section
             class="home-hero-image mb-4"

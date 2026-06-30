@@ -1,5 +1,4 @@
 import csv
-from datetime import timedelta
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
@@ -94,9 +93,7 @@ def home(request):
         "-created_at"
     ).first()
 
-    hero_activities = []
-
-    hero_dates = Activity.objects.filter(
+    hero_day_dates = Activity.objects.filter(
         date__gte=today
     ).order_by(
         "date"
@@ -105,22 +102,31 @@ def home(request):
         flat=True
     ).distinct()[:3]
 
-    for hero_date in hero_dates:
-        first_activity_for_day = Activity.objects.filter(
-            date=hero_date
-        ).order_by(
-            "start_time"
-        ).first()
+    hero_days = []
 
-        if first_activity_for_day:
-            hero_activities.append(first_activity_for_day)
+    for hero_date in hero_day_dates:
+        activities_for_day = list(
+            Activity.objects.filter(
+                date=hero_date
+            ).order_by(
+                "start_time"
+            )
+        )
 
-    if hero_activities:
-        selected_date = hero_activities[0].date
+        if activities_for_day:
+            hero_days.append({
+                "date": hero_date,
+                "activities": activities_for_day,
+            })
+
+    if hero_days:
+        selected_date = hero_days[0]["date"]
+        hero_activities = hero_days[0]["activities"]
         hero_activity = hero_activities[0]
         next_today_activity = hero_activities[0]
     else:
         selected_date = None
+        hero_activities = []
         hero_activity = None
         next_today_activity = None
 
@@ -164,6 +170,7 @@ def home(request):
 
     context = {
         "latest_notice": latest_notice,
+        "hero_days": hero_days,
         "hero_activity": hero_activity,
         "hero_activities": hero_activities,
         "selected_date": selected_date,
