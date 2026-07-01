@@ -269,6 +269,93 @@ def update_activity(request, pk):
 
 
 @login_required
+def duplicate_activity(request, pk):
+    activity = get_object_or_404(Activity, pk=pk)
+
+    if not request.user.is_staff:
+        messages.error(request, "Non hai il permesso per duplicare attività.")
+        return redirect("activities:activity_detail", pk=activity.pk)
+
+    if request.method == "POST":
+        raw_dates = request.POST.get("dates", "")
+        date_lines = raw_dates.splitlines()
+
+        valid_dates = []
+        invalid_dates = []
+
+        for line in date_lines:
+            clean_line = line.strip()
+
+            if not clean_line:
+                continue
+
+            try:
+                parsed_date = datetime.strptime(clean_line, "%Y-%m-%d").date()
+                valid_dates.append(parsed_date)
+            except ValueError:
+                invalid_dates.append(clean_line)
+
+        if invalid_dates:
+            messages.error(
+                request,
+                "Alcune date non sono valide. Usa il formato AAAA-MM-GG, una data per riga."
+            )
+
+            context = {
+                "activity": activity,
+                "dates": raw_dates,
+                "invalid_dates": invalid_dates,
+            }
+
+            return render(request, "activities/duplicate_activity.html", context)
+
+        if not valid_dates:
+            messages.error(request, "Inserisci almeno una data valida.")
+
+            context = {
+                "activity": activity,
+                "dates": raw_dates,
+            }
+
+            return render(request, "activities/duplicate_activity.html", context)
+
+        created_count = 0
+
+        for new_date in valid_dates:
+            Activity.objects.create(
+                title=activity.title,
+                category=activity.category,
+                description=activity.description,
+                image=activity.image,
+                date=new_date,
+                start_time=activity.start_time,
+                end_time=activity.end_time,
+                meeting_place=activity.meeting_place,
+                max_participants=activity.max_participants,
+                price=activity.price,
+                what_to_bring=activity.what_to_bring,
+                requires_booking=activity.requires_booking,
+                created_by=request.user,
+            )
+
+            created_count += 1
+
+        messages.success(
+            request,
+            f"Attività duplicata correttamente per {created_count} giorno/i."
+        )
+
+        return redirect("activities:activity_detail", pk=activity.pk)
+
+    context = {
+        "activity": activity,
+        "dates": "",
+    }
+
+    return render(request, "activities/duplicate_activity.html", context)
+
+
+@login_required
 def delete_activity(request, pk):
     activity = get_object_or_404(Activity, pk=pk)
 
@@ -302,6 +389,32 @@ def activity_calendar(request):
     activities_by_date = {}
 
     for activity in activities:
+        activity_start = datetime.combine(
+            activity.date,
+            activity.start_time
+        )
+
+        if activity.end_time:
+            activity_end = datetime.combine(
+                activity.date,
+                activity.end_time
+            )
+        else:
+            activity_end = activity_start + timedelta(hours=3)
+
+        duration_minutes = int(
+            (activity_end - activity_start).total_seconds() / 60
+        )
+
+        activity.duration_minutes = duration_minutes
+
+        if duration_minutes <= 120:
+            activity.duration_class = "duration-short"
+        elif duration_minutes <= 240:
+            activity.duration_class = "duration-medium"
+        else:
+            activity.duration_class = "duration-long"
+
         if activity.date not in activities_by_date:
             activities_by_date[activity.date] = []
 
@@ -312,7 +425,6 @@ def activity_calendar(request):
     }
 
     return render(request, "activities/activity_calendar.html", context)
-
 
 def today_program(request):
     restricted_redirect = registration_only_redirect(request)

@@ -135,7 +135,9 @@
         }
 
         .calendar-event {
-            display: block;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             border-radius: 14px;
             padding: 12px 13px;
             text-decoration: none;
@@ -149,6 +151,17 @@
             color: #111827;
             transform: translateY(-1px);
             box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+        }
+        .duration-short {
+            min-height: 82px;
+        }
+
+        .duration-medium {
+            min-height: 118px;
+        }
+
+        .duration-long {
+            min-height: 190px;
         }
 
         .calendar-event-bookable {
@@ -171,10 +184,6 @@
             border-color: #f5b5b5;
         }
 
-.calendar-event-game .event-time {
-    color: #b42318;
-}
-
         .event-time {
             font-size: 0.82rem;
             font-weight: 800;
@@ -190,18 +199,15 @@
             color: #b45309;
         }
 
+        .calendar-event-game .event-time {
+            color: #b42318;
+        }
+
         .event-title {
             font-size: 0.98rem;
             font-weight: 800;
             line-height: 1.2;
             margin-bottom: 7px;
-        }
-
-        .event-meta {
-            color: #4b5563;
-            font-size: 0.83rem;
-            line-height: 1.25;
-            margin-bottom: 8px;
         }
 
         .event-footer {
@@ -210,6 +216,7 @@
             align-items: center;
             gap: 8px;
             flex-wrap: wrap;
+            margin-top: auto;
         }
 
         .event-type {
@@ -229,6 +236,13 @@
             padding: 16px;
             color: #9ca3af;
             font-size: 0.9rem;
+        }
+
+        .event-meta {
+            color: #4b5563;
+            font-size: 0.8rem;
+            line-height: 1.25;
+            margin-bottom: 8px;
         }
 
         @media (max-width: 768px) {
@@ -292,7 +306,7 @@
                         </span>
 
                         <span>
-                             <span class="legend-dot legend-game"></span>
+                            <span class="legend-dot legend-game"></span>
                             Gioco
                         </span>
                     </div>
@@ -325,23 +339,28 @@
                                 {% for activity in activities %}
                                     <a
                                         href="{% url 'activities:activity_detail' activity.pk %}"
-                                        class="calendar-event {% if activity.category and activity.category.name == 'Gioco' %}calendar-event-game{% elif activity.category and activity.category.name == 'Info utili' %}calendar-event-info{% elif activity.requires_booking %}calendar-event-bookable{% else %}calendar-event-group{% endif %}"                                    >
-                                        <div class="event-time">
-                                            {{ activity.start_time|time:"H:i" }}
+                                        class="calendar-event {{ activity.duration_class }} {% if activity.category and activity.category.name == 'Gioco' %}calendar-event-game{% elif activity.category and activity.category.name == 'Info utili' %}calendar-event-info{% elif activity.requires_booking %}calendar-event-bookable{% else %}calendar-event-group{% endif %}"
+                                    >
+                                        <div>
+                                            <div class="event-time">
+                                                {{ activity.start_time|time:"H:i" }}
 
-                                            {% if activity.end_time %}
-                                                - {{ activity.end_time|time:"H:i" }}
-                                            {% else %}
-                                                - durata stimata 3h
+                                                {% if activity.end_time %}
+                                                    - {{ activity.end_time|time:"H:i" }}
+                                                {% else %}
+                                                    - durata stimata 3h
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="event-title">
+                                                {{ activity.title }}
+                                            </div>
+
+                                            {% if activity.duration_minutes > 120 %}
+                                                <div class="event-meta">
+                                                    Ritrovo: {{ activity.meeting_place }}
+                                                </div>
                                             {% endif %}
-                                        </div>
-
-                                        <div class="event-title">
-                                            {{ activity.title }}
-                                        </div>
-
-                                        <div class="event-meta">
-                                            Ritrovo: {{ activity.meeting_place }}
                                         </div>
 
                                         <div class="event-footer">

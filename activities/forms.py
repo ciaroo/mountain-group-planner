@@ -26,9 +26,9 @@ class ActivityForm(forms.ModelForm):
             "category": forms.Select(attrs={"class": "form-select"}),
             "description": forms.Textarea(attrs={"class": "form-control"}),
             "image": forms.ClearableFileInput(attrs={"class": "form-control"}),
-            "date": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
-            "start_time": forms.TimeInput(attrs={"class": "form-control", "type": "time"}),
-            "end_time": forms.TimeInput(attrs={"class": "form-control", "type": "time"}),
+            "date": forms.DateInput(attrs={"class": "form-control","type": "date",},format="%Y-%m-%d",),
+            "start_time": forms.TimeInput(attrs={"class": "form-control","type": "time",},format="%H:%M",),
+            "end_time": forms.TimeInput(attrs={"class": "form-control","type": "time",},format="%H:%M"),
             "meeting_place": forms.TextInput(attrs={"class": "form-control"}),
             "max_participants": forms.NumberInput(attrs={"class": "form-control"}),
             "price": forms.NumberInput(

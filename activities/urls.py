@@ -16,6 +16,7 @@ urlpatterns = [
     path("<int:pk>/book/", views.book_activity, name="book_activity"),
     path("<int:pk>/cancel/", views.cancel_booking, name="cancel_booking"),
     path("<int:pk>/edit/", views.update_activity, name="update_activity"),
+    path("<int:pk>/duplicate/", views.duplicate_activity, name="duplicate_activity"),
     path("<int:pk>/delete/", views.delete_activity, name="delete_activity"),
     path("notices/", views.notice_list, name="notice_list"),
     path("notices/create/", views.create_notice, name="create_notice"),

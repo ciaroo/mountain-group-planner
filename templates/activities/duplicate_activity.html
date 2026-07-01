@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Duplica attività{% endblock %}
+
+{% block content %}
+    <section class="page-header mb-4">
+        <div>
+            <div class="section-label">
+                Area organizzatore
+            </div>
+
+            <h1 class="mb-2">
+                Duplica attività
+            </h1>
+
+            <p class="text-muted mb-0">
+                Crea copie della stessa attività in più giorni.
+            </p>
+        </div>
+
+        <div>
+            <a href="{% url 'activities:activity_detail' activity.pk %}" class="btn btn-outline-success">
+                Torna all'attività
+            </a>
+        </div>
+    </section>
+
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <section class="card shadow-sm clean-card">
+                <div class="card-body">
+                    <h2 class="h4 mb-3">
+                        Date di duplicazione
+                    </h2>
+
+                    <p class="text-muted">
+                        Inserisci le date in cui vuoi copiare questa attività.
+                        Usa il formato <strong>AAAA-MM-GG</strong>, una data per riga.
+                    </p>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="dates" class="form-label">
+                                Date
+                            </label>
+
+                            <textarea
+                                id="dates"
+                                name="dates"
+                                class="form-control app-input"
+                                rows="7"
+                                placeholder="2026-07-10&#10;2026-07-11&#10;2026-07-12"
+                            >{{ dates }}</textarea>
+
+                            <div class="form-text">
+                                Esempio: 2026-07-10, una data per riga.
+                            </div>
+                        </div>
+
+                        {% if invalid_dates %}
+                            <div class="alert alert-danger">
+                                <strong>Date non valide:</strong>
+                                {{ invalid_dates|join:", " }}
+                            </div>
+                        {% endif %}
+
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="submit" class="btn btn-success">
+                                Duplica attività
+                            </button>
+
+                            <a href="{% url 'activities:activity_detail' activity.pk %}" class="btn btn-outline-secondary">
+                                Annulla
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-4 mb-4">
+            <section class="card shadow-sm clean-card">
+                <div class="card-body">
+                    <div class="section-label">
+                        Attività originale
+                    </div>
+
+                    <h2 class="h4 mb-3">
+                        {{ activity.title }}
+                    </h2>
+
+                    <p class="text-muted mb-2">
+                        {{ activity.date|date:"l d F Y" }}
+                    </p>
+
+                    <p class="mb-2">
+                        <strong>Orario:</strong>
+                        {{ activity.start_time|time:"H:i" }}
+                        {% if activity.end_time %}
+                            - {{ activity.end_time|time:"H:i" }}
+                        {% endif %}
+                    </p>
+
+                    <p class="mb-2">
+                        <strong>Ritrovo:</strong>
+                        {{ activity.meeting_place }}
+                    </p>
+
+                    {% if activity.requires_booking %}
+                        <p class="mb-0">
+                            <strong>Prenotabile:</strong>
+                            sì
+                        </p>
+                    {% else %}
+                        <p class="mb-0">
+                            <strong>Prenotabile:</strong>
+                            no
+                        </p>
+                    {% endif %}
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}
