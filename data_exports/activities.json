@@ -133,7 +133,7 @@
     "requires_booking": true,
     "created_by": 3,
     "created_at": "2026-06-28T13:57:18.645Z",
-    "updated_at": "2026-06-28T13:57:34.934Z"
+    "updated_at": "2026-07-01T20:49:48.093Z"
   }
 },
 {
@@ -142,19 +142,19 @@
   "fields": {
     "title": "Calcetto",
     "category": 3,
-    "description": "Match calcetto minimo 4 vs 4",
+    "description": "Match calcetto (max 6 vs 6)",
     "image": "activities/b43495a7-2f6e-4f41-9569-9486978d77f7.jpg.jpeg",
     "date": "2026-08-03",
     "start_time": "18:30:00",
     "end_time": "20:00:00",
     "meeting_place": "Giardino Casa",
-    "max_participants": 10,
+    "max_participants": 12,
     "price": null,
     "what_to_bring": "",
     "requires_booking": true,
     "created_by": 3,
     "created_at": "2026-06-28T14:08:39.745Z",
-    "updated_at": "2026-06-28T14:08:39.745Z"
+    "updated_at": "2026-07-01T21:05:47.955Z"
   }
 },
 {
@@ -197,6 +197,279 @@
     "created_by": 3,
     "created_at": "2026-06-28T16:14:37.534Z",
     "updated_at": "2026-06-28T16:14:37.534Z"
+  }
+},
+{
+  "model": "activities.activity",
+  "pk": 17,
+  "fields": {
+    "title": "Volley",
+    "category": 3,
+    "description": "Match di volley da 4 vs 4 a 6 vs 6.",
+    "image": "activities/13961e76-52cc-47f3-8b9e-7c19375169aa.jpeg.avif",
+    "date": "2026-08-04",
+    "start_time": "18:30:00",
+    "end_time": "20:00:00",
+    "meeting_place": "Giardino Casa",
+    "max_participants": 12,
+    "price": null,
+    "what_to_bring": "",
+    "requires_booking": true,
+    "created_by": 3,
+    "created_at": "2026-07-01T21:04:20.052Z",
+    "updated_at": "2026-07-01T21:04:20.052Z"
+  }
+},
+{
+  "model": "activities.activity",
+  "pk": 18,
+  "fields": {
+    "title": "Volley",
+    "category": 3,
+    "description": "Match di volley da 4 vs 4 a 6 vs 6.",
+    "image": "activities/13961e76-52cc-47f3-8b9e-7c19375169aa.jpeg.avif",
+    "date": "2026-08-05",
+    "start_time": "18:30:00",
+    "end_time": "20:00:00",
+    "meeting_place": "Giardino Casa",
+    "max_participants": 12,
+    "price": null,
+    "what_to_bring": "",
+    "requires_booking": true,
+    "created_by": 3,
+    "created_at": "2026-07-01T21:04:20.056Z",
+    "updated_at": "2026-07-01T21:04:20.056Z"
+  }
+},
+{
+  "model": "activities.activity",
+  "pk": 19,
+  "fields": {
+    "title": "Volley",
+    "category": 3,
+    "description": "Match di volley da 4 vs 4 a 6 vs 6.",
+    "image": "activities/13961e76-52cc-47f3-8b9e-7c19375169aa.jpeg.avif",
+    "date": "2026-08-06",
+    "start_time": "18:30:00",
+    "end_time": "20:00:00",
+    "meeting_place": "Giardino Casa",
+    "max_participants": 12,
+    "price": null,
+    "what_to_bring": "",
+    "requires_booking": true,
+    "created_by": 3,
+    "created_at": "2026-07-01T21:04:20.058Z",
+    "updated_at": "2026-07-01T21:04:20.058Z"
+  }
+},
+{
+  "model": "activities.activity",
+  "pk": 20,
+  "fields": {
+    "title": "Volley",
+    "category": 3,
+    "description": "Match di volley da 4 vs 4 a 6 vs 6.",
+    "image": "activities/13961e76-52cc-47f3-8b9e-7c19375169aa.jpeg.avif",
+    "date": "2026-08-07",
+    "start_time": "18:30:00",
+    "end_time": "20:00:00",
+    "meeting_place": "Giardino Casa",
+    "max_participants": 12,
+    "price": null,
+    "what_to_bring": "",
+    "requires_booking": true,
+    "created_by": 3,
+    "created_at": "2026-07-01T21:04:20.059Z",
+    "updated_at": "2026-07-01T21:04:20.059Z"
+  }
+},
+{
+  "model": "activities.activity",
+  "pk": 21,
+  "fields": {
+    "title": "Calcetto",
+    "category": 3,
+    "description": "Match calcetto (max 6 vs 6)",
+    "image": "activities/b43495a7-2f6e-4f41-9569-9486978d77f7.jpg.jpeg",
+    "date": "2026-08-04",
+    "start_time": "18:30:00",
+    "end_time": "20:00:00",
+    "meeting_place": "Giardino Casa",
+    "max_participants": 12,
+    "price": null,
+    "what_to_bring": "",
+    "requires_booking": true,
+    "created_by": 3,
+    "created_at": "2026-07-01T21:06:01.238Z",
+    "updated_at": "2026-07-01T21:06:01.238Z"
+  }
+},
+{
+  "model": "activities.activity",
+  "pk": 22,
+  "fields": {
+    "title": "Calcetto",
+    "category": 3,
+    "description": "Match calcetto (max 6 vs 6)",
+    "image": "activities/b43495a7-2f6e-4f41-9569-9486978d77f7.jpg.jpeg",
+    "date": "2026-08-05",
+    "start_time": "18:30:00",
+    "end_time": "20:00:00",
+    "meeting_place": "Giardino Casa",
+    "max_participants": 12,
+    "price": null,
+    "what_to_bring": "",
+    "requires_booking": true,
+    "created_by": 3,
+    "created_at": "2026-07-01T21:06:01.240Z",
+    "updated_at": "2026-07-01T21:06:01.240Z"
+  }
+},
+{
+  "model": "activities.activity",
+  "pk": 23,
+  "fields": {
+    "title": "Calcetto",
+    "category": 3,
+    "description": "Match calcetto (max 6 vs 6)",
+    "image": "activities/b43495a7-2f6e-4f41-9569-9486978d77f7.jpg.jpeg",
+    "date": "2026-08-06",
+    "start_time": "18:30:00",
+    "end_time": "20:00:00",
+    "meeting_place": "Giardino Casa",
+    "max_participants": 12,
+    "price": null,
+    "what_to_bring": "",
+    "requires_booking": true,
+    "created_by": 3,
+    "created_at": "2026-07-01T21:06:01.241Z",
+    "updated_at": "2026-07-01T21:06:01.241Z"
+  }
+},
+{
+  "model": "activities.activity",
+  "pk": 24,
+  "fields": {
+    "title": "Calcetto",
+    "category": 3,
+    "description": "Match calcetto (max 6 vs 6)",
+    "image": "activities/b43495a7-2f6e-4f41-9569-9486978d77f7.jpg.jpeg",
+    "date": "2026-08-07",
+    "start_time": "18:30:00",
+    "end_time": "20:00:00",
+    "meeting_place": "Giardino Casa",
+    "max_participants": 12,
+    "price": null,
+    "what_to_bring": "",
+    "requires_booking": true,
+    "created_by": 3,
+    "created_at": "2026-07-01T21:06:01.242Z",
+    "updated_at": "2026-07-01T21:06:01.242Z"
+  }
+},
+{
+  "model": "activities.activity",
+  "pk": 25,
+  "fields": {
+    "title": "Cena Squadra 2",
+    "category": 2,
+    "description": "",
+    "image": "activities/b1d6146b-a5ac-4540-a4d2-e44ecf09a8d0_1YmG1WC.jpeg.avif",
+    "date": "2026-08-04",
+    "start_time": "20:30:00",
+    "end_time": "22:00:00",
+    "meeting_place": "Salone",
+    "max_participants": null,
+    "price": null,
+    "what_to_bring": "",
+    "requires_booking": false,
+    "created_by": 3,
+    "created_at": "2026-07-01T21:06:34.154Z",
+    "updated_at": "2026-07-01T21:06:53.358Z"
+  }
+},
+{
+  "model": "activities.activity",
+  "pk": 26,
+  "fields": {
+    "title": "Cena Squadra 3",
+    "category": 2,
+    "description": "",
+    "image": "activities/b1d6146b-a5ac-4540-a4d2-e44ecf09a8d0_1YmG1WC.jpeg.avif",
+    "date": "2026-08-05",
+    "start_time": "20:30:00",
+    "end_time": "22:00:00",
+    "meeting_place": "Salone",
+    "max_participants": null,
+    "price": null,
+    "what_to_bring": "",
+    "requires_booking": false,
+    "created_by": 3,
+    "created_at": "2026-07-01T21:06:34.157Z",
+    "updated_at": "2026-07-01T21:07:13.976Z"
+  }
+},
+{
+  "model": "activities.activity",
+  "pk": 27,
+  "fields": {
+    "title": "Cena Squadra 4",
+    "category": 2,
+    "description": "",
+    "image": "activities/b1d6146b-a5ac-4540-a4d2-e44ecf09a8d0_1YmG1WC.jpeg.avif",
+    "date": "2026-08-06",
+    "start_time": "20:30:00",
+    "end_time": "22:00:00",
+    "meeting_place": "Salone",
+    "max_participants": null,
+    "price": null,
+    "what_to_bring": "",
+    "requires_booking": false,
+    "created_by": 3,
+    "created_at": "2026-07-01T21:06:34.158Z",
+    "updated_at": "2026-07-01T21:07:35.312Z"
+  }
+},
+{
+  "model": "activities.activity",
+  "pk": 28,
+  "fields": {
+    "title": "Cascate di Saent",
+    "category": 1,
+    "description": "Escursione Val di rabbi, Cascate di Saint",
+    "image": "activities/34636-val-di-sole-cascate-saent-giampaolo-calza.37ad90be.jpg",
+    "date": "2026-08-05",
+    "start_time": "08:15:00",
+    "end_time": "16:30:00",
+    "meeting_place": "Parcheggio Fontanin al Coler",
+    "max_participants": null,
+    "price": null,
+    "what_to_bring": "- Scarpe da escursione\r\n- Cappello e crema solare\r\n- K-way\r\n- Riserve abbondanti di acqua \r\n- Pranzo al sacco\r\n\r\nConsigliato vestirsi a strati",
+    "requires_booking": false,
+    "created_by": 3,
+    "created_at": "2026-07-01T21:17:27.183Z",
+    "updated_at": "2026-07-01T21:29:32.238Z"
+  }
+},
+{
+  "model": "activities.activity",
+  "pk": 29,
+  "fields": {
+    "title": "Escursione a gruppi",
+    "category": 1,
+    "description": "Escursione a gruppi da comunicare in seguito",
+    "image": "activities/rif_2.jpg",
+    "date": "2026-08-06",
+    "start_time": "08:30:00",
+    "end_time": "16:30:00",
+    "meeting_place": "Casa",
+    "max_participants": null,
+    "price": null,
+    "what_to_bring": "- Scarpe da escursione\r\n- Cappello e crema solare\r\n- K-way\r\n- Riserve abbondanti di acqua \r\n- Pranzo al sacco\r\n\r\nConsigliato vestirsi a strati",
+    "requires_booking": false,
+    "created_by": 3,
+    "created_at": "2026-07-01T21:32:13.053Z",
+    "updated_at": "2026-07-01T21:32:13.053Z"
   }
 }
 ]
