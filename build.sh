@@ -8,4 +8,4 @@ python manage.py collectstatic --no-input
 
 python manage.py migrate
 
-python manage.py loaddata data_exports/activities.json
+python manage.py loaddata data_exports/demo_exam_data.json
